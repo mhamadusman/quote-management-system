@@ -1,3 +1,4 @@
+// app/exceptions/handler.ts
 import app from '@adonisjs/core/services/app'
 import { type HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import { errors as vineErrors } from '@vinejs/vine'
@@ -10,9 +11,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
   async handle(error: unknown, ctx: HttpContext) {
     const { response } = ctx
 
-    console.error('actual error from request :: ', error)
-
-    // your custom Exception — same shape as Express
     if (error instanceof Exception) {
       return response.status(error.status).send({
         message: error.message || 'Something went wrong',
@@ -20,9 +18,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       })
     }
 
-    // VineJS validation errors — auto-thrown by request.validateUsing()
-    // convert into the SAME shape your Exception class produces,
-    // so the frontend only ever deals with ONE error format
     if (error instanceof vineErrors.E_VALIDATION_ERROR) {
       return response.status(ErrorCodes.UNPROCESSABLE_ENTITY).send({
         message: 'Validation Failed',
@@ -30,13 +25,18 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       })
     }
 
-    // fallback — anything unhandled
+    // ANY unexpected error — DB failures, null refs, anything not already
+    // one of the two known types above — lands here automatically.
+    // No controller needs to catch it, wrap it, or know about this fallback.
     return response.status(ErrorCodes.INTERNAL_SERVER_ERROR).send({
       message: 'Internal server error',
     })
   }
 
   async report(error: unknown, ctx: HttpContext) {
+    // ONE centralized logging point for every error, from every controller,
+    // across the entire app — this replaces every scattered console.error
+    console.error(`[${ctx.request.method()}] ${ctx.request.url()} ::`, error)
     return super.report(error, ctx)
   }
 }
