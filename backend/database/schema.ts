@@ -7,13 +7,36 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class AuditLogSchema extends BaseModel {
+  static $columns = ['action', 'changes', 'createdAt', 'entityId', 'entityType', 'id', 'ipAddress', 'userAgent', 'userId'] as const
+  $columns = AuditLogSchema.$columns
+  @column()
+  declare action: string
+  @column()
+  declare changes: any | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare entityId: number
+  @column()
+  declare entityType: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare ipAddress: string | null
+  @column()
+  declare userAgent: string | null
+  @column()
+  declare userId: number | null
+}
+
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime | null
+  declare createdAt: DateTime
   @column.dateTime()
   declare expiresAt: DateTime | null
   @column()
@@ -30,6 +53,107 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare type: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class CorridorSchema extends BaseModel {
+  static $columns = ['atvUsd', 'corridorId', 'costFixedPerUsd', 'costVariablePerTrx', 'country', 'createdAt', 'defaultFxSpread', 'fxSource', 'historicalAtv', 'id', 'needsApproval', 'payer', 'payoutCurrency', 'receivingPartner', 'region', 'service', 'sourceRowId', 'stdFixedFeeUsd', 'transactionType', 'treasuryFxCost', 'updatedAt', 'variableFeePercentage', 'versionId'] as const
+  $columns = CorridorSchema.$columns
+  @column()
+  declare atvUsd: string
+  @column()
+  declare corridorId: number
+  @column()
+  declare costFixedPerUsd: string
+  @column()
+  declare costVariablePerTrx: string
+  @column()
+  declare country: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare defaultFxSpread: string
+  @column()
+  declare fxSource: string
+  @column()
+  declare historicalAtv: string
+  @column({ isPrimary: true })
+  declare id: string
+  @column()
+  declare needsApproval: boolean
+  @column()
+  declare payer: string
+  @column()
+  declare payoutCurrency: string
+  @column()
+  declare receivingPartner: string
+  @column()
+  declare region: string
+  @column()
+  declare service: string
+  @column()
+  declare sourceRowId: string
+  @column()
+  declare stdFixedFeeUsd: string
+  @column()
+  declare transactionType: string
+  @column()
+  declare treasuryFxCost: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare variableFeePercentage: string
+  @column()
+  declare versionId: number
+}
+
+export class QuoteCorridorSchema extends BaseModel {
+  static $columns = ['corridorId', 'createdAt', 'id', 'overrideStdFixedFeeUsd', 'overrideVariableFeePercentage', 'quoteId', 'revenue', 'updatedAt'] as const
+  $columns = QuoteCorridorSchema.$columns
+  @column()
+  declare corridorId: string | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare overrideStdFixedFeeUsd: string | null
+  @column()
+  declare overrideVariableFeePercentage: string | null
+  @column()
+  declare quoteId: number | null
+  @column()
+  declare revenue: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class QuoteSchema extends BaseModel {
+  static $columns = ['contractLength', 'createdAt', 'id', 'monthlyRevenue', 'name', 'ownerId', 'partnerName', 'status', 'tcv', 'totalRevenue', 'updatedAt', 'version'] as const
+  $columns = QuoteSchema.$columns
+  @column()
+  declare contractLength: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare monthlyRevenue: string
+  @column()
+  declare name: string
+  @column()
+  declare ownerId: number | null
+  @column()
+  declare partnerName: string | null
+  @column()
+  declare status: string
+  @column()
+  declare tcv: string
+  @column()
+  declare totalRevenue: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare version: number
 }
 
 export class UserSchema extends BaseModel {

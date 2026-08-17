@@ -1,6 +1,8 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { BaseSerializer } from '@adonisjs/core/transformers'
 import { type SimplePaginatorMetaKeys } from '@adonisjs/lucid/types/querybuilder'
+import type { ApplicationService } from '@adonisjs/core/types'
+import db from '@adonisjs/lucid/services/db'
 
 /**
  * Custom serializer for API responses that ensures consistent JSON structure
@@ -65,5 +67,22 @@ HttpContext.instanceProperty('serialize', serialize)
 declare module '@adonisjs/core/http' {
   export interface HttpContext {
     serialize: typeof serialize
+  }
+}
+
+export default class AppProvider {
+  constructor(protected app: ApplicationService) { }
+
+  /**
+   * The application has booted and is ready to accept requests.
+   */
+  async ready() {
+    try {
+      // Test database connection with a lightweight ping query
+      await db.rawQuery('SELECT 1')
+      console.log('🚀 DB connected successfully!')
+    } catch (error) {
+      console.error('❌ DB connection failed:', error.message)
+    }
   }
 }
