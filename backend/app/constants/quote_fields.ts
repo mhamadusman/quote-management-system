@@ -11,4 +11,5 @@ export const QuoteFields = {
   OWNER_ID: 'ownerId',
   CREATED_AT: 'createdAt',
   UPDATED_AT: 'updatedAt',
+  CORRIDOR_IDS: 'corridorIds',
 } as const

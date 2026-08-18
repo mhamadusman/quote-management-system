@@ -13,4 +13,3 @@ export default class QuoteCorridor extends QuoteCorridorSchema {
   @belongsTo(() => Corridor, { foreignKey: 'corridorId' })
   declare corridor: BelongsTo<typeof Corridor>
 }
-

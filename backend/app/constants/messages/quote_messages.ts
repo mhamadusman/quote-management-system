@@ -5,6 +5,7 @@ export const QuoteMessages = {
     STORE: 'Quote created successfully',
     SHOW: 'Quote retrieved successfully',
     DELETE: 'Quote deleted successfully',
+    ATTACH_CORRIDORS: 'Corridors attached to quote successfully',
   },
 
   ERROR: {
@@ -25,5 +26,9 @@ export const QuoteMessages = {
     ID_REQUIRED: `${QuoteFields.ID} is required`,
     ID_INVALID: `${QuoteFields.ID} must be a valid number`,
     NOT_FOUND: 'Quote not found',
+    CORRIDOR_IDS_REQUIRED: `${QuoteFields.CORRIDOR_IDS} is required`,
+    CORRIDOR_IDS_INVALID: `${QuoteFields.CORRIDOR_IDS} must be a comma-separated list of ids`,
+    CORRIDORS_NOT_FOUND: 'One or more corridors do not exist',
+    ATTACH_CORRIDORS_FAILED: 'Could not attach corridors to quote, please try again',
   },
 } as const

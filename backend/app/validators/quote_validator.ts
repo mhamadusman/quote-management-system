@@ -43,3 +43,19 @@ quoteIdValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
   [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
 })
+
+const COMMA_SEPARATED_REGEX = /^[^,]+(,[^,]+)*$/
+
+export const attachCorridorsValidator = vine.compile(
+  vine.object({
+    [QuoteFields.ID]: vine.number(),
+    [QuoteFields.CORRIDOR_IDS]: vine.string().trim().regex(COMMA_SEPARATED_REGEX),
+  })
+)
+
+attachCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
+  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
+  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
+  [`${QuoteFields.CORRIDOR_IDS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  [`${QuoteFields.CORRIDOR_IDS}.regex`]: QuoteMessages.ERROR.CORRIDOR_IDS_INVALID,
+})

@@ -11,6 +11,7 @@ export type ScannedRoutes = {
     'quotes.quote.store': { paramsTuple?: []; params?: {} }
     'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'quotes.quote.attach_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
@@ -25,6 +26,7 @@ export type ScannedRoutes = {
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'quotes.quote.store': { paramsTuple?: []; params?: {} }
+    'quotes.quote.attach_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   DELETE: {
     'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

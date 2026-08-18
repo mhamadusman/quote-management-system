@@ -48,6 +48,12 @@ const routes = {
     tokens: [{"old":"/api/v1/quotes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['quotes.quote.destroy']['types'],
   },
+  'quotes.quote.attach_corridors': {
+    methods: ["POST"],
+    pattern: '/api/v1/quotes/:id/corridors',
+    tokens: [{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id/corridors","type":1,"val":"id","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"corridors","end":""}],
+    types: placeholder as Registry['quotes.quote.attach_corridors']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

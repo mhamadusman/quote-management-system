@@ -91,4 +91,16 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['destroy']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'quotes.quote.attach_corridors': {
+    methods: ["POST"]
+    pattern: '/api/v1/quotes/:id/corridors'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').attachCorridorsValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').attachCorridorsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['attachCorridors']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['attachCorridors']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
 }

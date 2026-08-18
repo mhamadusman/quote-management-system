@@ -23,6 +23,7 @@ export interface ApiDefinition {
       store: typeof routes['quotes.quote.store']
       show: typeof routes['quotes.quote.show']
       destroy: typeof routes['quotes.quote.destroy']
+      attachCorridors: typeof routes['quotes.quote.attach_corridors']
     }
   }
 }

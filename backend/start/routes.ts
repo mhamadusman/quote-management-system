@@ -39,6 +39,7 @@ router
         router.post('/', [controllers.Quote, 'store'])
         router.get('/:id', [controllers.Quote, 'show'])
         router.delete('/:id', [controllers.Quote, 'destroy'])
+        router.post('/:id/corridors', [controllers.Quote, 'attachCorridors'])
       })
       .prefix('quotes')
       .as('quotes')
