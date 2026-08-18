@@ -33,5 +33,15 @@ router
       .prefix('account')
       .as('profile')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.post('/', [controllers.Quote, 'store'])
+        router.get('/:id', [controllers.Quote, 'show'])
+        router.delete('/:id', [controllers.Quote, 'destroy'])
+      })
+      .prefix('quotes')
+      .as('quotes')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

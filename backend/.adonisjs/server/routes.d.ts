@@ -8,17 +8,26 @@ export type ScannedRoutes = {
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
+    'quotes.quote.store': { paramsTuple?: []; params?: {} }
+    'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
+    'quotes.quote.store': { paramsTuple?: []; params?: {} }
+  }
+  DELETE: {
+    'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

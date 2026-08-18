@@ -55,4 +55,40 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['destroy']>>>
     }
   }
+  'quotes.quote.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/quotes'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').quoteSchemaValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').quoteSchemaValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'quotes.quote.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/quotes/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/quote_validator').quoteIdValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'quotes.quote.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/quotes/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').quoteIdValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').quoteIdValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['destroy']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
 }

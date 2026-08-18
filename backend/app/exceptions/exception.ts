@@ -1,6 +1,5 @@
-
 import { Exception as AdonisException } from '@adonisjs/core/exceptions'
-import { ErrorCodes } from '../constants/error_codes.js'
+import type { ErrorCodes } from '../constants/error_codes.ts'
 import type { ValidationError } from '../types/types.js'
 export class Exception extends AdonisException {
   public readonly errors?: ValidationError[]
