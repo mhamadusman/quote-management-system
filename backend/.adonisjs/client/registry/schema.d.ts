@@ -67,6 +67,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'quotes.quote.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/quotes'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['index']>>>
+    }
+  }
   'quotes.quote.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/quotes/:id'

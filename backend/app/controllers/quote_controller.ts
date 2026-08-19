@@ -27,14 +27,26 @@ export default class QuoteController {
     })
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, auth }: HttpContext) {
     const { id } = await quoteIdValidator.validate({ id: params.id })
+    const user = auth.getUserOrFail()
 
-    const quote = await QuoteManager.getQuote(id)
+    const quote = await QuoteManager.getQuote(id, user.id)
 
     return response.status(SuccessCodes.OK).send({
       message: QuoteMessages.SUCCESS.SHOW,
       data: { quote },
+    })
+  }
+
+  async index({ auth, response }: HttpContext) {
+    const user = auth.getUserOrFail()
+
+    const quotes = await QuoteManager.getQuotesByOwner(user.id)
+
+    return response.status(SuccessCodes.OK).send({
+      message: QuoteMessages.SUCCESS.SHOW,
+      data: { quotes },
     })
   }
 

@@ -5,14 +5,18 @@ import { QuoteMessages } from '../constants/messages/quote_messages.ts'
 import QuoteRepository from '../repositories/quote_repository.ts'
 
 export default class QuoteUtils {
-  static async getQuote(id: number): Promise<Quote> {
-    const quote = await QuoteRepository.getById(id)
+  static async getQuote(id: number, ownerId: number): Promise<Quote> {
+    const quote = await QuoteRepository.getByIdAndOwner(id, ownerId)
 
     if (!quote) {
       throw new Exception(QuoteMessages.ERROR.NOT_FOUND, ErrorCodes.NOT_FOUND)
     }
 
     return quote
+  }
+
+  static async getQuotesByOwner(ownerId: number): Promise<Quote[]> {
+    return QuoteRepository.getAllByOwner(ownerId)
   }
 
   static async deleteQuote(id: number): Promise<void> {

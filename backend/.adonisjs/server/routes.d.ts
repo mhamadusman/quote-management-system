@@ -9,16 +9,19 @@ export type ScannedRoutes = {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
     'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'quotes.quote.store': { paramsTuple?: []; params?: {} }
+    'quotes.quote.index': { paramsTuple?: []; params?: {} }
     'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'quotes.quote.attach_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'quotes.quote.index': { paramsTuple?: []; params?: {} }
     'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
+    'quotes.quote.index': { paramsTuple?: []; params?: {} }
     'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {

@@ -37,6 +37,7 @@ router
     router
       .group(() => {
         router.post('/', [controllers.Quote, 'store'])
+        router.get('/', [controllers.Quote, 'index'])
         router.get('/:id', [controllers.Quote, 'show'])
         router.delete('/:id', [controllers.Quote, 'destroy'])
         router.post('/:id/corridors', [controllers.Quote, 'attachCorridors'])

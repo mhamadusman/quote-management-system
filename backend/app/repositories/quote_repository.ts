@@ -11,8 +11,20 @@ export default class QuoteRepository {
     return Quote.all()
   }
 
+  static async getAllByOwner(ownerId: number): Promise<Quote[]> {
+    return Quote.query().where('ownerId', ownerId).preload('corridors')
+  }
+
   static async getById(id: number): Promise<Quote | null> {
     return Quote.find(id)
+  }
+
+  static async getByIdAndOwner(id: number, ownerId: number): Promise<Quote | null> {
+    return Quote.query()
+      .where('id', id)
+      .where('ownerId', ownerId)
+      .preload('corridors')
+      .first()
   }
 
   static async delete(id: number): Promise<void> {

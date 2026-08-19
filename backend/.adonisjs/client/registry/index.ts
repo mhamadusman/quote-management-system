@@ -36,6 +36,12 @@ const routes = {
     tokens: [{"old":"/api/v1/quotes","type":0,"val":"api","end":""},{"old":"/api/v1/quotes","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes","type":0,"val":"quotes","end":""}],
     types: placeholder as Registry['quotes.quote.store']['types'],
   },
+  'quotes.quote.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/quotes',
+    tokens: [{"old":"/api/v1/quotes","type":0,"val":"api","end":""},{"old":"/api/v1/quotes","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes","type":0,"val":"quotes","end":""}],
+    types: placeholder as Registry['quotes.quote.index']['types'],
+  },
   'quotes.quote.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/quotes/:id',

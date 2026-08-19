@@ -8,8 +8,12 @@ import { ErrorCodes } from '../constants/error_codes.ts'
 import { Exception } from '#exceptions/exception'
 
 export default class QuoteManager {
-  static async getQuote(id: number): Promise<Quote> {
-    return QuoteUtils.getQuote(id)
+  static async getQuote(id: number, ownerId: number): Promise<Quote> {
+    return QuoteUtils.getQuote(id, ownerId)
+  }
+
+  static async getQuotesByOwner(ownerId: number): Promise<Quote[]> {
+    return QuoteUtils.getQuotesByOwner(ownerId)
   }
 
   static async deleteQuote(id: number): Promise<void> {

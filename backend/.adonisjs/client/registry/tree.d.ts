@@ -21,6 +21,7 @@ export interface ApiDefinition {
   quotes: {
     quote: {
       store: typeof routes['quotes.quote.store']
+      index: typeof routes['quotes.quote.index']
       show: typeof routes['quotes.quote.show']
       destroy: typeof routes['quotes.quote.destroy']
       attachCorridors: typeof routes['quotes.quote.attach_corridors']
