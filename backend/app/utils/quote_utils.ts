@@ -20,18 +20,22 @@ export default class QuoteUtils {
     return QuoteRepository.getAllByOwner(ownerId)
   }
 
-  static async deleteQuote(id: number): Promise<void> {
-    const quote = await QuoteRepository.getById(id)
+  static async deleteQuote(id: number, ownerId: number): Promise<void> {
+    const quote = await QuoteRepository.getByIdAndOwner(id, ownerId)
 
     if (!quote) {
       throw new Exception(QuoteMessages.ERROR.NOT_FOUND, ErrorCodes.NOT_FOUND)
     }
 
-    await QuoteRepository.delete(id)
+    await QuoteRepository.delete(quote)
   }
 
-  static async assertQuoteExists(quoteId: number, trx: TransactionClientContract): Promise<Quote> {
-    const quote = await QuoteRepository.getByIdWithTransaction(quoteId, trx)
+  static async assertQuoteExists(
+    quoteId: number,
+    ownerId: number,
+    trx: TransactionClientContract
+  ): Promise<Quote> {
+    const quote = await QuoteRepository.lockQuote(quoteId, ownerId, trx)
 
     if (!quote) {
       throw new Exception(QuoteMessages.ERROR.NOT_FOUND, ErrorCodes.NOT_FOUND)

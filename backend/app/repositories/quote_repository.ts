@@ -23,11 +23,16 @@ export default class QuoteRepository {
     return Quote.query().where('id', id).where('ownerId', ownerId).preload('corridors').first()
   }
 
-  static async getByIdWithTransaction(
+  static async lockQuote(
     quoteId: number,
+    ownerId: number,
     trx: TransactionClientContract
   ): Promise<Quote | null> {
-    return Quote.query({ client: trx }).where('id', quoteId).first()
+    return Quote.query({ client: trx })
+      .where('id', quoteId)
+      .where('ownerId', ownerId)
+      .forUpdate()
+      .first()
   }
 
   static async getAttachedCorridorIds(
@@ -44,15 +49,8 @@ export default class QuoteRepository {
     return rows.map((row) => row.corridor_id)
   }
 
-  static async lockQuote(quoteId: number, trx: TransactionClientContract): Promise<void> {
-    await trx.from('quotes').where('id', quoteId).forUpdate().first()
-  }
-
-  static async delete(id: number): Promise<void> {
-    const quote = await Quote.find(id)
-    if (quote) {
-      await quote.delete()
-    }
+  static async delete(quote: Quote): Promise<void> {
+    await quote.delete()
   }
 
   static async attachCorridors(

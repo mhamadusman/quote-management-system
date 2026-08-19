@@ -51,21 +51,23 @@ export default class QuoteController {
     })
   }
 
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     const { id } = await quoteIdValidator.validate({ id: params.id })
+    const user = auth.getUserOrFail()
 
-    await QuoteManager.deleteQuote(id)
+    await QuoteManager.deleteQuote(id, user.id)
 
     return response.status(SuccessCodes.NO_CONTENT).send({
       message: QuoteMessages.SUCCESS.DELETE,
     })
   }
 
-  async attachCorridors({ params, request, response }: HttpContext) {
+  async attachCorridors({ params, request, response, auth }: HttpContext) {
     const { id, corridorIds } = await attachCorridorsValidator.validate({
       id: params.id,
       corridorIds: request.body().corridorIds,
     })
+    const user = auth.getUserOrFail()
 
     const parsedCorridorIds = [
       ...new Set(
@@ -76,17 +78,18 @@ export default class QuoteController {
       ),
     ]
 
-    await QuoteManager.attachCorridors(Number(id), parsedCorridorIds)
+    await QuoteManager.attachCorridors(Number(id), user.id, parsedCorridorIds)
     return response.status(SuccessCodes.OK).send({
       message: QuoteMessages.SUCCESS.ATTACH_CORRIDORS,
     })
   }
 
-  async removeCorridors({ params, request, response }: HttpContext) {
+  async removeCorridors({ params, request, response, auth }: HttpContext) {
     const { id, corridorIds } = await removeCorridorsValidator.validate({
       id: params.id,
       corridorIds: request.body().corridorIds,
     })
+    const user = auth.getUserOrFail()
 
     const parsedCorridorIds = [
       ...new Set(
@@ -97,7 +100,7 @@ export default class QuoteController {
       ),
     ]
 
-    await QuoteManager.removeCorridors(Number(id), parsedCorridorIds)
+    await QuoteManager.removeCorridors(Number(id), user.id, parsedCorridorIds)
     return response.status(SuccessCodes.OK).send({
       message: QuoteMessages.SUCCESS.REMOVE_CORRIDORS,
     })

@@ -13,29 +13,34 @@ export default class QuoteManager {
     return QuoteUtils.getQuotesByOwner(ownerId)
   }
 
-  static async deleteQuote(id: number): Promise<void> {
-    return QuoteUtils.deleteQuote(id)
+  static async deleteQuote(id: number, ownerId: number): Promise<void> {
+    return QuoteUtils.deleteQuote(id, ownerId)
   }
 
-  static async attachCorridors(quoteId: number, corridorIds: string[]): Promise<void> {
+  static async attachCorridors(
+    quoteId: number,
+    ownerId: number,
+    corridorIds: string[]
+  ): Promise<void> {
     await db.transaction(async (trx) => {
-      const quote = await QuoteUtils.assertQuoteExists(quoteId, trx)
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, ownerId, trx)
       const corridors = await CorridorUtils.assertCorridorsExist(corridorIds, trx)
-      //hadle duplicate corridorIds in the request body
       await QuoteUtils.assertCorridorsNotAttached(quoteId, corridorIds, trx)
 
-      await QuoteRepository.lockQuote(quoteId, trx)
       await QuoteRepository.attachCorridors(quote, corridors, trx)
       await QuoteRepository.recalculateQuote(quoteId, trx)
     })
   }
 
-  static async removeCorridors(quoteId: number, corridorIds: string[]): Promise<void> {
+  static async removeCorridors(
+    quoteId: number,
+    ownerId: number,
+    corridorIds: string[]
+  ): Promise<void> {
     await db.transaction(async (trx) => {
-      const quote = await QuoteUtils.assertQuoteExists(quoteId, trx)
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, ownerId, trx)
       await QuoteUtils.assertCorridorsAttached(quoteId, corridorIds, trx)
 
-      await QuoteRepository.lockQuote(quoteId, trx)
       await QuoteRepository.detachCorridors(quote, corridorIds, trx)
       await QuoteRepository.recalculateQuote(quoteId, trx)
     })

@@ -2,7 +2,7 @@ import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 import { QuoteFields } from '../constants/quote_fields.ts'
 import { QuoteMessages } from '../constants/messages/quote_messages.ts'
 
-const QUOTE_STATUSES = ['draft', 'in_review', 'accepted', 'rejected'] as const
+const QUOTE_STATUSES = ['draft', 'in_review', 'approved', 'rejected'] as const
 const DECIMAL_REGEX = /^\d+(\.\d+)?$/
 
 export const quoteSchemaValidator = vine.compile(

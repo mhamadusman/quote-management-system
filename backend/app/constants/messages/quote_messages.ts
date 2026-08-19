@@ -21,7 +21,7 @@ export const QuoteMessages = {
     TOTAL_REVENUE_REQUIRED: `${QuoteFields.TOTAL_REVENUE} is required`,
     TOTAL_REVENUE_DECIMAL: `${QuoteFields.TOTAL_REVENUE} must be a valid decimal number`,
     STATUS_REQUIRED: `${QuoteFields.STATUS} is required`,
-    STATUS_INVALID: `${QuoteFields.STATUS} must be one of: draft, sent, accepted, rejected`,
+    STATUS_INVALID: `${QuoteFields.STATUS} must be one of: draft, in_review, approved, rejected`,
     CONTRACT_LENGTH_POSITIVE: `${QuoteFields.CONTRACT_LENGTH} must be a positive integer`,
     NOT_CREATED: 'Could not create the quote, please try again',
     ID_REQUIRED: `${QuoteFields.ID} is required`,
