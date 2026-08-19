@@ -44,6 +44,12 @@ export default class QuoteUtils {
     return quote
   }
 
+  static assertQuoteVersion(quote: Quote, clientVersion: number): void {
+    if (quote.version !== clientVersion) {
+      throw new Exception(QuoteMessages.ERROR.VERSION_CONFLICT, ErrorCodes.CONFLICT)
+    }
+  }
+
   static async assertCorridorsNotAttached(
     quoteId: number,
     corridorIds: string[],

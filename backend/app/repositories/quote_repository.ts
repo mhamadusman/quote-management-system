@@ -1,4 +1,5 @@
 import Quote from '#models/quote'
+import db from '@adonisjs/lucid/services/db'
 import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import type Corridor from '#models/corridor'
 
@@ -12,7 +13,7 @@ export default class QuoteRepository {
   }
 
   static async getAllByOwner(ownerId: number): Promise<Quote[]> {
-    return Quote.query().where('ownerId', ownerId).preload('corridors')
+    return Quote.query().where('ownerId', ownerId)
   }
 
   static async getById(id: number): Promise<Quote | null> {
@@ -20,7 +21,7 @@ export default class QuoteRepository {
   }
 
   static async getByIdAndOwner(id: number, ownerId: number): Promise<Quote | null> {
-    return Quote.query().where('id', id).where('ownerId', ownerId).preload('corridors').first()
+    return Quote.query().where('id', id).where('ownerId', ownerId).first()
   }
 
   static async lockQuote(
@@ -81,6 +82,202 @@ export default class QuoteRepository {
     await quote.related('corridors').detach(corridorIds)
   }
 
+  static async updateGeneralDetails(
+    quoteId: number,
+    payload: {
+      name?: string
+      partnerName?: string
+      contractLength?: number
+      status?: string
+    },
+    trx: TransactionClientContract,
+    bumpVersion: boolean
+  ): Promise<void> {
+    const sets: string[] = []
+    const bindings: (string | number)[] = []
+
+    if (payload.name !== undefined) {
+      sets.push('name = ?')
+      bindings.push(payload.name)
+    }
+    if (payload.partnerName !== undefined) {
+      sets.push('partner_name = ?')
+      bindings.push(payload.partnerName)
+    }
+    if (payload.contractLength !== undefined) {
+      sets.push('contract_length = ?')
+      bindings.push(payload.contractLength)
+    }
+    if (payload.status !== undefined) {
+      sets.push('status = ?')
+      bindings.push(payload.status)
+    }
+
+    if (sets.length === 0) return
+
+    if (bumpVersion) sets.push('version = version + 1')
+    sets.push('updated_at = NOW()')
+
+    bindings.push(quoteId)
+
+    await trx.rawQuery(
+      `UPDATE quotes SET ${sets.join(', ')} WHERE id = ?`,
+      bindings
+    )
+  }
+
+  static async updateCorridorOverrides(
+    quoteId: number,
+    overrides: Array<{
+      corridorId: string
+      overrideStdFixedFeeUsd?: string
+      overrideVariableFeePercentage?: string
+    }>,
+    trx: TransactionClientContract
+  ): Promise<void> {
+    for (const override of overrides) {
+      const sets: string[] = []
+      const bindings: (string | number)[] = []
+
+      if (override.overrideStdFixedFeeUsd !== undefined) {
+        sets.push('override_std_fixed_fee_usd = ?')
+        bindings.push(override.overrideStdFixedFeeUsd)
+      }
+      if (override.overrideVariableFeePercentage !== undefined) {
+        sets.push('override_variable_fee_percentage = ?')
+        bindings.push(override.overrideVariableFeePercentage)
+      }
+
+      if (sets.length === 0) continue
+
+      sets.push('updated_at = NOW()')
+      bindings.push(quoteId, override.corridorId)
+
+      await trx.rawQuery(
+        `UPDATE quote_corridors SET ${sets.join(', ')} WHERE quote_id = ? AND corridor_id = ?`,
+        bindings
+      )
+    }
+  }
+
+  static async updateSingleCorridorOverride(
+    quoteId: number,
+    corridorId: string,
+    override: {
+      overrideStdFixedFeeUsd?: string
+      overrideVariableFeePercentage?: string
+    },
+    trx: TransactionClientContract
+  ): Promise<void> {
+    const sets: string[] = []
+    const bindings: (string | number)[] = []
+
+    if (override.overrideStdFixedFeeUsd !== undefined) {
+      sets.push('override_std_fixed_fee_usd = ?')
+      bindings.push(override.overrideStdFixedFeeUsd)
+    }
+    if (override.overrideVariableFeePercentage !== undefined) {
+      sets.push('override_variable_fee_percentage = ?')
+      bindings.push(override.overrideVariableFeePercentage)
+    }
+
+    if (sets.length === 0) return
+
+    sets.push('updated_at = NOW()')
+    bindings.push(quoteId, corridorId)
+
+    await trx.rawQuery(
+      `UPDATE quote_corridors SET ${sets.join(', ')} WHERE quote_id = ? AND corridor_id = ?`,
+      bindings
+    )
+  }
+
+  static async getAttachedCorridorsWithCalcs(
+    quoteId: number
+  ): Promise<Record<string, unknown>[]> {
+    const result = await db.rawQuery(
+      `
+      SELECT
+        c.id,
+        c.version_id          AS "versionId",
+        c.region,
+        c.country,
+        c.transaction_type    AS "transactionType",
+        c.service,
+        c.receiving_partner   AS "receivingPartner",
+        c.payer,
+        c.payout_currency     AS "payoutCurrency",
+        c.historical_atv      AS "historicalAtv",
+        c.atv_usd             AS "atvUsd",
+        c.std_fixed_fee_usd   AS "stdFixedFeeUsd",
+        c.variable_fee_percentage AS "variableFeePercentage",
+        c.fx_source           AS "fxSource",
+        c.default_fx_spread   AS "defaultFxSpread",
+        c.treasury_fx_cost    AS "treasuryFxCost",
+        c.cost_fixed_per_usd  AS "costFixedPerUsd",
+        c.cost_variable_per_trx AS "costVariablePerTrx",
+        c.needs_approval      AS "needsApproval",
+        qc.override_std_fixed_fee_usd      AS "overrideStdFixedFeeUsd",
+        qc.override_variable_fee_percentage AS "overrideVariableFeePercentage",
+        -- Effective rates: use override if present, otherwise fall back to original corridor value
+        COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd) AS "effectiveFixedFeeUsd",
+        COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) AS "effectiveVariableFeePercentage",
+        -- Per-corridor calculations (yearlyVolumeUSD = 100000)
+        (
+          COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
+          * CEIL(100000.0 / c.atv_usd)
+          + COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0
+          * 100000
+        ) AS revenue,
+        (
+          c.cost_fixed_per_usd * 100000
+          + c.cost_variable_per_trx * CEIL(100000.0 / c.atv_usd)
+        ) AS cost,
+        (
+          (COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
+           * CEIL(100000.0 / c.atv_usd)
+           + COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0
+           * 100000)
+          -
+          (c.cost_fixed_per_usd * 100000
+           + c.cost_variable_per_trx * CEIL(100000.0 / c.atv_usd))
+        ) AS margin,
+        CASE
+          WHEN (
+            COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
+            * CEIL(100000.0 / c.atv_usd)
+            + COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0
+            * 100000
+          ) = 0 THEN 0
+          ELSE (
+            (
+              (COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
+               * CEIL(100000.0 / c.atv_usd)
+               + COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0
+               * 100000)
+              -
+              (c.cost_fixed_per_usd * 100000
+               + c.cost_variable_per_trx * CEIL(100000.0 / c.atv_usd))
+            )
+            /
+            (
+              COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
+              * CEIL(100000.0 / c.atv_usd)
+              + COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0
+              * 100000
+            ) * 100
+          )
+        END AS "marginPercent"
+      FROM quote_corridors qc
+      INNER JOIN corridors c ON c.id = qc.corridor_id
+      WHERE qc.quote_id = ?
+      ORDER BY c.id
+      `,
+      [quoteId]
+    )
+    return result.rows ?? []
+  }
+
   static async recalculateQuote(quoteId: number, trx: TransactionClientContract): Promise<void> {
     await trx.rawQuery(
       `
@@ -89,13 +286,13 @@ export default class QuoteRepository {
     total_revenue = COALESCE((
       SELECT SUM(
         (
-          qc.override_std_fixed_fee_usd
+          COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
           *
           CEIL(100000.0 / c.atv_usd)
         )
         +
         (
-          (qc.override_variable_fee_percentage / 100.0)
+          (COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0)
           *
           100000
         )
@@ -108,13 +305,13 @@ export default class QuoteRepository {
     monthly_revenue = COALESCE((
       SELECT SUM(
         (
-          qc.override_std_fixed_fee_usd
+          COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
           *
           CEIL(100000.0 / c.atv_usd)
         )
         +
         (
-          (qc.override_variable_fee_percentage / 100.0)
+          (COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0)
           *
           100000
         )
@@ -127,13 +324,13 @@ export default class QuoteRepository {
     tcv = COALESCE((
       SELECT SUM(
         (
-          qc.override_std_fixed_fee_usd
+          COALESCE(qc.override_std_fixed_fee_usd, c.std_fixed_fee_usd)
           *
           CEIL(100000.0 / c.atv_usd)
         )
         +
         (
-          (qc.override_variable_fee_percentage / 100.0)
+          (COALESCE(qc.override_variable_fee_percentage, c.variable_fee_percentage) / 100.0)
           *
           100000
         )

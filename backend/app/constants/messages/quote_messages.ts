@@ -4,9 +4,12 @@ export const QuoteMessages = {
   SUCCESS: {
     STORE: 'Quote created successfully',
     SHOW: 'Quote retrieved successfully',
+    UPDATE: 'Quote updated successfully',
     DELETE: 'Quote deleted successfully',
     ATTACH_CORRIDORS: 'Corridors attached to quote successfully',
     REMOVE_CORRIDORS: 'Corridors removed from quote successfully',
+    CORRIDOR_OVERRIDE_UPDATED: 'Corridor rates updated successfully',
+    CORRIDORS_RETRIEVED: 'Attached corridors retrieved successfully',
   },
 
   ERROR: {
@@ -34,5 +37,12 @@ export const QuoteMessages = {
     CORRIDORS_ALREADY_ATTACHED: 'One or more corridors are already attached to the quote',
     CORRIDORS_NOT_ATTACHED: 'One or more corridors are not attached to the quote',
     REMOVE_CORRIDORS_FAILED: 'Could not remove corridors from quote, please try again',
+    VERSION_REQUIRED: `${QuoteFields.VERSION} is required`,
+    VERSION_POSITIVE: `${QuoteFields.VERSION} must be a positive integer`,
+    VERSION_CONFLICT:
+      'Quote was modified by another process. Please refresh and try again',
+    CORRIDOR_ID_REQUIRED: `${QuoteFields.CORRIDOR_ID} is required`,
+    OVERRIDE_STD_FIXED_FEE_USD_DECIMAL: `${QuoteFields.OVERRIDE_STD_FIXED_FEE_USD} must be a valid decimal number`,
+    OVERRIDE_VARIABLE_FEE_PERCENTAGE_DECIMAL: `${QuoteFields.OVERRIDE_VARIABLE_FEE_PERCENTAGE} must be a valid decimal number`,
   },
 } as const

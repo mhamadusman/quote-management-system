@@ -55,6 +55,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/access_tokens_controller').default['destroy']>>>
     }
   }
+  'corridors.corridor.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/corridors'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/corridor_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/corridor_controller').default['index']>>>
+    }
+  }
   'quotes.quote.store': {
     methods: ["POST"]
     pattern: '/api/v1/quotes'
@@ -91,6 +103,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['show']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'quotes.quote.update': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/quotes/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').updateQuoteValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').updateQuoteValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'quotes.quote.destroy': {
     methods: ["DELETE"]
     pattern: '/api/v1/quotes/:id'
@@ -103,6 +127,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['destroy']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'quotes.quote.list_corridors': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/quotes/:id/corridors'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQueryForGet<InferInput<(typeof import('#validators/quote_validator').quoteIdValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['listCorridors']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['listCorridors']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'quotes.quote.attach_corridors': {
     methods: ["POST"]
     pattern: '/api/v1/quotes/:id/corridors'
@@ -113,6 +149,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').attachCorridorsValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['attachCorridors']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['attachCorridors']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'quotes.quote.update_corridor': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/quotes/:id/corridors/:corridorId'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').updateCorridorOverrideValidator)>>
+      paramsTuple: [ParamValue, ParamValue]
+      params: { id: ParamValue; corridorId: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').updateCorridorOverrideValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['updateCorridor']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['updateCorridor']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'quotes.quote.remove_corridors': {
