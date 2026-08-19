@@ -12,4 +12,8 @@ export const QuoteFields = {
   CREATED_AT: 'createdAt',
   UPDATED_AT: 'updatedAt',
   CORRIDOR_IDS: 'corridorIds',
+  CORRIDORS: 'corridors',
+  CORRIDOR_ID: 'corridorId',
+  OVERRIDE_STD_FIXED_FEE_USD: 'overrideStdFixedFeeUsd',
+  OVERRIDE_VARIABLE_FEE_PERCENTAGE: 'overrideVariableFeePercentage',
 } as const

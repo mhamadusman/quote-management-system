@@ -4,6 +4,8 @@ import {
   quoteIdValidator,
   attachCorridorsValidator,
   removeCorridorsValidator,
+  updateQuoteValidator,
+  updateCorridorOverrideValidator,
 } from '#validators/quote_validator'
 import QuoteRepository from '../repositories/quote_repository.ts'
 import QuoteManager from '../managers/quote_manager.ts'
@@ -59,6 +61,70 @@ export default class QuoteController {
 
     return response.status(SuccessCodes.NO_CONTENT).send({
       message: QuoteMessages.SUCCESS.DELETE,
+    })
+  }
+
+  async update({ params, request, response, auth }: HttpContext) {
+    const validated = await updateQuoteValidator.validate({
+      id: params.id,
+      ...request.body(),
+    })
+    const user = auth.getUserOrFail()
+
+    const generalDetails = {
+      name: validated.name,
+      partnerName: validated.partnerName,
+      contractLength: validated.contractLength,
+      status: validated.status,
+    }
+
+    const quote = await QuoteManager.updateQuote(
+      validated.id,
+      user.id,
+      validated.version,
+      generalDetails
+    )
+
+    return response.status(SuccessCodes.OK).send({
+      message: QuoteMessages.SUCCESS.UPDATE,
+      data: { quote },
+    })
+  }
+
+  async updateCorridor({ params, request, response, auth }: HttpContext) {
+    const validated = await updateCorridorOverrideValidator.validate({
+      id: params.id,
+      corridorId: params.corridorId,
+      ...request.body(),
+    })
+    const user = auth.getUserOrFail()
+
+    const quote = await QuoteManager.updateCorridorOverride(
+      validated.id,
+      user.id,
+      validated.corridorId,
+      validated.version,
+      {
+        overrideStdFixedFeeUsd: validated.overrideStdFixedFeeUsd,
+        overrideVariableFeePercentage: validated.overrideVariableFeePercentage,
+      }
+    )
+
+    return response.status(SuccessCodes.OK).send({
+      message: QuoteMessages.SUCCESS.CORRIDOR_OVERRIDE_UPDATED,
+      data: { quote },
+    })
+  }
+
+  async listCorridors({ params, response, auth }: HttpContext) {
+    const { id } = await quoteIdValidator.validate({ id: params.id })
+    const user = auth.getUserOrFail()
+
+    const corridors = await QuoteManager.getAttachedCorridors(id, user.id)
+
+    return response.status(SuccessCodes.OK).send({
+      message: QuoteMessages.SUCCESS.CORRIDORS_RETRIEVED,
+      data: { corridors },
     })
   }
 

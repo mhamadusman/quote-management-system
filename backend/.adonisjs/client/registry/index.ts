@@ -30,6 +30,12 @@ const routes = {
     tokens: [{"old":"/api/v1/account/logout","type":0,"val":"api","end":""},{"old":"/api/v1/account/logout","type":0,"val":"v1","end":""},{"old":"/api/v1/account/logout","type":0,"val":"account","end":""},{"old":"/api/v1/account/logout","type":0,"val":"logout","end":""}],
     types: placeholder as Registry['profile.access_tokens.destroy']['types'],
   },
+  'corridors.corridor.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/corridors',
+    tokens: [{"old":"/api/v1/corridors","type":0,"val":"api","end":""},{"old":"/api/v1/corridors","type":0,"val":"v1","end":""},{"old":"/api/v1/corridors","type":0,"val":"corridors","end":""}],
+    types: placeholder as Registry['corridors.corridor.index']['types'],
+  },
   'quotes.quote.store': {
     methods: ["POST"],
     pattern: '/api/v1/quotes',
@@ -48,17 +54,35 @@ const routes = {
     tokens: [{"old":"/api/v1/quotes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['quotes.quote.show']['types'],
   },
+  'quotes.quote.update': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/quotes/:id',
+    tokens: [{"old":"/api/v1/quotes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['quotes.quote.update']['types'],
+  },
   'quotes.quote.destroy': {
     methods: ["DELETE"],
     pattern: '/api/v1/quotes/:id',
     tokens: [{"old":"/api/v1/quotes/:id","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['quotes.quote.destroy']['types'],
   },
+  'quotes.quote.list_corridors': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/quotes/:id/corridors',
+    tokens: [{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id/corridors","type":1,"val":"id","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"corridors","end":""}],
+    types: placeholder as Registry['quotes.quote.list_corridors']['types'],
+  },
   'quotes.quote.attach_corridors': {
     methods: ["POST"],
     pattern: '/api/v1/quotes/:id/corridors',
     tokens: [{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id/corridors","type":1,"val":"id","end":""},{"old":"/api/v1/quotes/:id/corridors","type":0,"val":"corridors","end":""}],
     types: placeholder as Registry['quotes.quote.attach_corridors']['types'],
+  },
+  'quotes.quote.update_corridor': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/quotes/:id/corridors/:corridorId',
+    tokens: [{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":0,"val":"api","end":""},{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":0,"val":"v1","end":""},{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":0,"val":"quotes","end":""},{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":1,"val":"id","end":""},{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":0,"val":"corridors","end":""},{"old":"/api/v1/quotes/:id/corridors/:corridorId","type":1,"val":"corridorId","end":""}],
+    types: placeholder as Registry['quotes.quote.update_corridor']['types'],
   },
   'quotes.quote.remove_corridors': {
     methods: ["DELETE"],

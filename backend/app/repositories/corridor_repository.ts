@@ -10,4 +10,8 @@ export default class CorridorRepository {
       .whereIn('id', corridorIds)
       .select('id', 'atvUsd', 'stdFixedFeeUsd', 'variableFeePercentage')
   }
+
+  static async getAll(): Promise<Corridor[]> {
+    return Corridor.query().orderBy('id', 'asc')
+  }
 }
