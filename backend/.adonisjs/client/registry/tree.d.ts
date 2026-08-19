@@ -25,6 +25,7 @@ export interface ApiDefinition {
       show: typeof routes['quotes.quote.show']
       destroy: typeof routes['quotes.quote.destroy']
       attachCorridors: typeof routes['quotes.quote.attach_corridors']
+      removeCorridors: typeof routes['quotes.quote.remove_corridors']
     }
   }
 }

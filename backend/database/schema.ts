@@ -8,17 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuditLogSchema extends BaseModel {
-  static $columns = [
-    'action',
-    'changes',
-    'createdAt',
-    'entityId',
-    'entityType',
-    'id',
-    'ipAddress',
-    'userAgent',
-    'userId',
-  ] as const
+  static $columns = ['action', 'changes', 'createdAt', 'entityId', 'entityType', 'id', 'ipAddress', 'userAgent', 'userId'] as const
   $columns = AuditLogSchema.$columns
   @column()
   declare action: string
@@ -41,18 +31,7 @@ export class AuditLogSchema extends BaseModel {
 }
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -77,30 +56,7 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class CorridorSchema extends BaseModel {
-  static $columns = [
-    'atvUsd',
-    'costFixedPerUsd',
-    'costVariablePerTrx',
-    'country',
-    'createdAt',
-    'defaultFxSpread',
-    'fxSource',
-    'historicalAtv',
-    'id',
-    'needsApproval',
-    'payer',
-    'payoutCurrency',
-    'receivingPartner',
-    'region',
-    'service',
-    'sourceRowId',
-    'stdFixedFeeUsd',
-    'transactionType',
-    'treasuryFxCost',
-    'updatedAt',
-    'variableFeePercentage',
-    'versionId',
-  ] as const
+  static $columns = ['atvUsd', 'costFixedPerUsd', 'costVariablePerTrx', 'country', 'createdAt', 'defaultFxSpread', 'fxSource', 'historicalAtv', 'id', 'needsApproval', 'payer', 'payoutCurrency', 'receivingPartner', 'region', 'service', 'sourceRowId', 'stdFixedFeeUsd', 'transactionType', 'treasuryFxCost', 'updatedAt', 'variableFeePercentage', 'versionId'] as const
   $columns = CorridorSchema.$columns
   @column()
   declare atvUsd: string
@@ -149,15 +105,7 @@ export class CorridorSchema extends BaseModel {
 }
 
 export class QuoteCorridorSchema extends BaseModel {
-  static $columns = [
-    'corridorId',
-    'createdAt',
-    'id',
-    'overrideStdFixedFeeUsd',
-    'overrideVariableFeePercentage',
-    'quoteId',
-    'updatedAt',
-  ] as const
+  static $columns = ['corridorId', 'createdAt', 'id', 'overrideStdFixedFeeUsd', 'overrideVariableFeePercentage', 'quoteId', 'updatedAt'] as const
   $columns = QuoteCorridorSchema.$columns
   @column()
   declare corridorId: string
@@ -176,20 +124,7 @@ export class QuoteCorridorSchema extends BaseModel {
 }
 
 export class QuoteSchema extends BaseModel {
-  static $columns = [
-    'contractLength',
-    'createdAt',
-    'id',
-    'monthlyRevenue',
-    'name',
-    'ownerId',
-    'partnerName',
-    'status',
-    'tcv',
-    'totalRevenue',
-    'updatedAt',
-    'version',
-  ] as const
+  static $columns = ['contractLength', 'createdAt', 'id', 'monthlyRevenue', 'name', 'ownerId', 'partnerName', 'status', 'tcv', 'totalRevenue', 'updatedAt', 'version'] as const
   $columns = QuoteSchema.$columns
   @column()
   declare contractLength: number

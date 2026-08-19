@@ -13,6 +13,7 @@ export type ScannedRoutes = {
     'quotes.quote.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'quotes.quote.attach_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'quotes.quote.remove_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'profile.profile.show': { paramsTuple?: []; params?: {} }
@@ -33,6 +34,7 @@ export type ScannedRoutes = {
   }
   DELETE: {
     'quotes.quote.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'quotes.quote.remove_corridors': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
 }
 declare module '@adonisjs/core/types/http' {

@@ -1,11 +1,8 @@
-import QuoteUtils from '../utils/quote_utils.ts'
+import type Quote from '#models/quote'
 import db from '@adonisjs/lucid/services/db'
-import Quote from '#models/quote'
-import Corridor from '#models/corridor'
+import QuoteUtils from '../utils/quote_utils.ts'
+import CorridorUtils from '../utils/corridor_utils.ts'
 import QuoteRepository from '../repositories/quote_repository.ts'
-import { QuoteMessages } from '../constants/messages/quote_messages.ts'
-import { ErrorCodes } from '../constants/error_codes.ts'
-import { Exception } from '#exceptions/exception'
 
 export default class QuoteManager {
   static async getQuote(id: number, ownerId: number): Promise<Quote> {
@@ -16,30 +13,35 @@ export default class QuoteManager {
     return QuoteUtils.getQuotesByOwner(ownerId)
   }
 
-  static async deleteQuote(id: number): Promise<void> {
-    return QuoteUtils.deleteQuote(id)
+  static async deleteQuote(id: number, ownerId: number): Promise<void> {
+    return QuoteUtils.deleteQuote(id, ownerId)
   }
 
-  static async attachCorridors(quoteId: number, corridorIds: string[]): Promise<void> {
-    const [quote, corridors] = await Promise.all([
-      Quote.find(quoteId),
-      Corridor.query()
-        .whereIn('id', corridorIds)
-        .select('id', 'atvUsd', 'stdFixedFeeUsd', 'variableFeePercentage'),
-    ])
-    console.log('details :: ', corridors)
-
-    if (!quote) {
-      throw new Exception(QuoteMessages.ERROR.NOT_FOUND, ErrorCodes.NOT_FOUND)
-    }
-
-    if (corridors.length !== corridorIds.length) {
-      throw new Exception(QuoteMessages.ERROR.CORRIDORS_NOT_FOUND, ErrorCodes.NOT_FOUND)
-    }
-
+  static async attachCorridors(
+    quoteId: number,
+    ownerId: number,
+    corridorIds: string[]
+  ): Promise<void> {
     await db.transaction(async (trx) => {
-      await QuoteRepository.attachCorridors(quote, corridors, trx)
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, ownerId, trx)
+      const corridors = await CorridorUtils.assertCorridorsExist(corridorIds, trx)
+      await QuoteUtils.assertCorridorsNotAttached(quoteId, corridorIds, trx)
 
+      await QuoteRepository.attachCorridors(quote, corridors, trx)
+      await QuoteRepository.recalculateQuote(quoteId, trx)
+    })
+  }
+
+  static async removeCorridors(
+    quoteId: number,
+    ownerId: number,
+    corridorIds: string[]
+  ): Promise<void> {
+    await db.transaction(async (trx) => {
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, ownerId, trx)
+      await QuoteUtils.assertCorridorsAttached(quoteId, corridorIds, trx)
+
+      await QuoteRepository.detachCorridors(quote, corridorIds, trx)
       await QuoteRepository.recalculateQuote(quoteId, trx)
     })
   }
