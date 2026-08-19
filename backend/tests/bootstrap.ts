@@ -7,6 +7,8 @@ import { dbAssertions } from '@adonisjs/lucid/plugins/db'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 import { sessionApiClient } from '@adonisjs/session/plugins/api_client'
+import { MigrationRunner } from '@adonisjs/lucid/migration'
+import db from '@adonisjs/lucid/services/db'
 import type { Registry } from '../.adonisjs/client/registry/schema.d.ts'
 
 /**
@@ -15,10 +17,6 @@ import type { Registry } from '../.adonisjs/client/registry/schema.d.ts'
 declare module '@japa/api-client/types' {
   interface RoutesRegistry extends Registry {}
 }
-
-/**
- * This file is imported by the "bin/test.ts" entrypoint file
- */
 
 /**
  * Configure Japa plugins in the plugins array.
@@ -34,14 +32,33 @@ export const plugins: Config['plugins'] = [
 ]
 
 /**
- * Configure lifecycle function to run before and after all the
- * tests.
- *
- * The setup functions are executed before all the tests
- * The teardown functions are executed after all the tests
+ * Setup: drop all tables (clean slate), run migrations, run seeders.
+ * Teardown: handled by bin/test.ts (app.terminate closes DB connections).
  */
 export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
-  setup: [],
+  setup: [
+    async () => {
+      const connection = db.connection()
+
+      // Drop all tables for a clean slate (ensures seeders are idempotent)
+      await connection.rawQuery('DROP SCHEMA public CASCADE')
+      await connection.rawQuery('CREATE SCHEMA public')
+
+      // Run all pending migrations
+      const migrator = new MigrationRunner(db, app, {
+        direction: 'up',
+        connectionName: 'postgres',
+        dryRun: false,
+      })
+      await migrator.run()
+
+      // Run all seeders (user_seeder + corridor_seeder)
+      const userSeederModule = await import('#database/seeders/user_seeder')
+      const corridorSeederModule = await import('#database/seeders/corridor_seeder')
+      await new userSeederModule.default(connection).run()
+      await new corridorSeederModule.default(connection).run()
+    },
+  ],
   teardown: [],
 }
 
