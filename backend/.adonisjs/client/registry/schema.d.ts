@@ -115,4 +115,16 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['attachCorridors']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'quotes.quote.remove_corridors': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/quotes/:id/corridors'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/quote_validator').removeCorridorsValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/quote_validator').removeCorridorsValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['removeCorridors']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/quote_controller').default['removeCorridors']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
 }

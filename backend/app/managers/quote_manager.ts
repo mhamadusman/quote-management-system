@@ -1,11 +1,8 @@
-import QuoteUtils from '../utils/quote_utils.ts'
+import type Quote from '#models/quote'
 import db from '@adonisjs/lucid/services/db'
-import Quote from '#models/quote'
-import Corridor from '#models/corridor'
+import QuoteUtils from '../utils/quote_utils.ts'
+import CorridorUtils from '../utils/corridor_utils.ts'
 import QuoteRepository from '../repositories/quote_repository.ts'
-import { QuoteMessages } from '../constants/messages/quote_messages.ts'
-import { ErrorCodes } from '../constants/error_codes.ts'
-import { Exception } from '#exceptions/exception'
 
 export default class QuoteManager {
   static async getQuote(id: number, ownerId: number): Promise<Quote> {
@@ -21,25 +18,25 @@ export default class QuoteManager {
   }
 
   static async attachCorridors(quoteId: number, corridorIds: string[]): Promise<void> {
-    const [quote, corridors] = await Promise.all([
-      Quote.find(quoteId),
-      Corridor.query()
-        .whereIn('id', corridorIds)
-        .select('id', 'atvUsd', 'stdFixedFeeUsd', 'variableFeePercentage'),
-    ])
-    console.log('details :: ', corridors)
-
-    if (!quote) {
-      throw new Exception(QuoteMessages.ERROR.NOT_FOUND, ErrorCodes.NOT_FOUND)
-    }
-
-    if (corridors.length !== corridorIds.length) {
-      throw new Exception(QuoteMessages.ERROR.CORRIDORS_NOT_FOUND, ErrorCodes.NOT_FOUND)
-    }
-
     await db.transaction(async (trx) => {
-      await QuoteRepository.attachCorridors(quote, corridors, trx)
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, trx)
+      const corridors = await CorridorUtils.assertCorridorsExist(corridorIds, trx)
+      //hadle duplicate corridorIds in the request body
+      await QuoteUtils.assertCorridorsNotAttached(quoteId, corridorIds, trx)
 
+      await QuoteRepository.lockQuote(quoteId, trx)
+      await QuoteRepository.attachCorridors(quote, corridors, trx)
+      await QuoteRepository.recalculateQuote(quoteId, trx)
+    })
+  }
+
+  static async removeCorridors(quoteId: number, corridorIds: string[]): Promise<void> {
+    await db.transaction(async (trx) => {
+      const quote = await QuoteUtils.assertQuoteExists(quoteId, trx)
+      await QuoteUtils.assertCorridorsAttached(quoteId, corridorIds, trx)
+
+      await QuoteRepository.lockQuote(quoteId, trx)
+      await QuoteRepository.detachCorridors(quote, corridorIds, trx)
       await QuoteRepository.recalculateQuote(quoteId, trx)
     })
   }

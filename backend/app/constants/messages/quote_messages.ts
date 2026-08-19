@@ -6,6 +6,7 @@ export const QuoteMessages = {
     SHOW: 'Quote retrieved successfully',
     DELETE: 'Quote deleted successfully',
     ATTACH_CORRIDORS: 'Corridors attached to quote successfully',
+    REMOVE_CORRIDORS: 'Corridors removed from quote successfully',
   },
 
   ERROR: {
@@ -27,8 +28,11 @@ export const QuoteMessages = {
     ID_INVALID: `${QuoteFields.ID} must be a valid number`,
     NOT_FOUND: 'Quote not found',
     CORRIDOR_IDS_REQUIRED: `${QuoteFields.CORRIDOR_IDS} is required`,
-    CORRIDOR_IDS_INVALID: `${QuoteFields.CORRIDOR_IDS} must be a comma-separated list of ids`,
+    CORRIDOR_IDS_INVALID: `${QuoteFields.CORRIDOR_IDS} must be a comma-separated list of numeric ids like "1234567"`,
     CORRIDORS_NOT_FOUND: 'One or more corridors do not exist',
     ATTACH_CORRIDORS_FAILED: 'Could not attach corridors to quote, please try again',
+    CORRIDORS_ALREADY_ATTACHED: 'One or more corridors are already attached to the quote',
+    CORRIDORS_NOT_ATTACHED: 'One or more corridors are not attached to the quote',
+    REMOVE_CORRIDORS_FAILED: 'Could not remove corridors from quote, please try again',
   },
 } as const

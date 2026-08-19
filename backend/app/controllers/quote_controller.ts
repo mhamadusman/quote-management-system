@@ -3,6 +3,7 @@ import {
   quoteSchemaValidator,
   quoteIdValidator,
   attachCorridorsValidator,
+  removeCorridorsValidator,
 } from '#validators/quote_validator'
 import QuoteRepository from '../repositories/quote_repository.ts'
 import QuoteManager from '../managers/quote_manager.ts'
@@ -78,6 +79,27 @@ export default class QuoteController {
     await QuoteManager.attachCorridors(Number(id), parsedCorridorIds)
     return response.status(SuccessCodes.OK).send({
       message: QuoteMessages.SUCCESS.ATTACH_CORRIDORS,
+    })
+  }
+
+  async removeCorridors({ params, request, response }: HttpContext) {
+    const { id, corridorIds } = await removeCorridorsValidator.validate({
+      id: params.id,
+      corridorIds: request.body().corridorIds,
+    })
+
+    const parsedCorridorIds = [
+      ...new Set(
+        corridorIds
+          .split(',')
+          .map((corridorId: string) => corridorId.trim())
+          .filter(Boolean)
+      ),
+    ]
+
+    await QuoteManager.removeCorridors(Number(id), parsedCorridorIds)
+    return response.status(SuccessCodes.OK).send({
+      message: QuoteMessages.SUCCESS.REMOVE_CORRIDORS,
     })
   }
 }

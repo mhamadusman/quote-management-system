@@ -1,7 +1,13 @@
 import Corridor from '#models/corridor'
+import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class CorridorRepository {
-  static async getByIds(ids: string[]): Promise<Corridor[]> {
-    return Corridor.query().whereIn('id', ids)
+  static async getByIds(
+    corridorIds: string[],
+    trx: TransactionClientContract
+  ): Promise<Corridor[]> {
+    return Corridor.query({ client: trx })
+      .whereIn('id', corridorIds)
+      .select('id', 'atvUsd', 'stdFixedFeeUsd', 'variableFeePercentage')
   }
 }
