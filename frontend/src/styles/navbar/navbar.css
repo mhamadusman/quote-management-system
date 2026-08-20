@@ -1,0 +1,75 @@
+/* Glassmorphic navbar bar without bottom border and with increased comfortable height */
+.navbar-appbar {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: none !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04) !important;
+  color: #0F172A !important;
+  height: 60px;
+  justify-content: center;
+}
+
+/* Dense toolbar matching navbar container height */
+.navbar-toolbar {
+  min-height: 60px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Fully rounded compact profile pill with fixed 36px height */
+.navbar-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 8px 0 3px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  max-width: 190px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Hover transition where border blends into background */
+.navbar-profile-pill:hover {
+  background-color: #F1F5F9;
+  border-color: #F1F5F9;
+}
+
+/* Profile text container with strict truncation to keep width short */
+.navbar-profile-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  overflow: hidden;
+  max-width: 110px;
+}
+
+/* Fully rounded logout pill with exact matching 36px height */
+.navbar-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+  background-color: #FFFFFF;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* Logout hover with soft alert background */
+.navbar-logout-btn:hover {
+  background-color: #FEE2E2;
+  border-color: #FEE2E2;
+  color: #EF4444;
+}

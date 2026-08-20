@@ -1,0 +1,91 @@
+import type { TypographyVariantsOptions } from '@mui/material/styles';
+
+export const typography: TypographyVariantsOptions = {
+  fontFamily: ['Inter', 'Poppins', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'].join(','),
+  h1: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 700,
+    fontSize: '2rem',
+    lineHeight: 1.25,
+    letterSpacing: '-0.02em',
+    color: '#0F172A',
+  },
+  h2: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 600,
+    fontSize: '1.5rem',
+    lineHeight: 1.3,
+    letterSpacing: '-0.015em',
+    color: '#0F172A',
+  },
+  h3: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 600,
+    fontSize: '1.25rem',
+    lineHeight: 1.35,
+    letterSpacing: '-0.01em',
+    color: '#0F172A',
+  },
+  h4: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 600,
+    fontSize: '1.1rem',
+    lineHeight: 1.4,
+    color: '#0F172A',
+  },
+  h5: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 600,
+    fontSize: '0.95rem',
+    lineHeight: 1.45,
+    color: '#0F172A',
+  },
+  h6: {
+    fontFamily: ['Poppins', 'Inter', 'sans-serif'].join(','),
+    fontWeight: 600,
+    fontSize: '0.85rem',
+    lineHeight: 1.5,
+    color: '#0F172A',
+  },
+  subtitle1: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: 1.5,
+    color: '#475569',
+  },
+  subtitle2: {
+    fontSize: '0.8rem',
+    fontWeight: 500,
+    lineHeight: 1.5,
+    color: '#64748B',
+  },
+  body1: {
+    fontSize: '0.875rem',
+    lineHeight: 1.5,
+    color: '#0F172A',
+  },
+  body2: {
+    fontSize: '0.8125rem',
+    lineHeight: 1.5,
+    color: '#475569',
+  },
+  button: {
+    fontFamily: ['Inter', 'sans-serif'].join(','),
+    fontSize: '0.8125rem',
+    fontWeight: 600,
+    textTransform: 'none',
+    letterSpacing: '0.01em',
+  },
+  caption: {
+    fontSize: '0.75rem',
+    lineHeight: 1.4,
+    color: '#64748B',
+  },
+  overline: {
+    fontSize: '0.6875rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+    color: '#64748B',
+  },
+};

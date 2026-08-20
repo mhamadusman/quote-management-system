@@ -1,0 +1,70 @@
+/* Main container for footer with clipped overflow for decorative graphics */
+.footer-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  padding-top: 48px;
+  padding-bottom: 32px;
+}
+
+/* Large half-circle ambient shape positioned top-right with enhanced visibility */
+.footer-circle-ring {
+  position: absolute;
+  top: -140px;
+  right: -140px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  /* Layered border and solid radial tone with enhanced, balanced opacity */
+  border: 32px solid rgba(37, 99, 235, 0.08);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.06) 0%, rgba(37, 99, 235, 0.02) 65%, transparent 70%);
+  /* Soft glow without loud accent colors */
+  box-shadow: 0 0 50px rgba(37, 99, 235, 0.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Large faded brand watermark aligned horizontally centered at bottom */
+.footer-watermark {
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  /* Centers watermark horizontally across all viewport widths */
+  transform: translateX(-50%);
+  font-size: 13rem;
+  font-weight: 800;
+  font-family: 'Poppins', sans-serif;
+  color: rgba(15, 23, 42, 0.035);
+  letter-spacing: -0.05em;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+@media (max-width: 900px) {
+  .footer-watermark {
+    font-size: 8rem;
+    bottom: -20px;
+  }
+  .footer-circle-ring {
+    width: 280px;
+    height: 280px;
+    top: -90px;
+    right: -90px;
+    border-width: 20px;
+  }
+}
+
+/* Interactive dummy links styling with smooth color transition */
+.footer-link {
+  font-size: 0.8125rem;
+  color: #64748B;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+  color: #2563EB;
+}

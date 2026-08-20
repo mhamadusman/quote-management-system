@@ -1,26 +1,118 @@
-# Dependencies and AdonisJS build
-node_modules
-build
-tmp/*
-!tmp/.gitkeep
+# =========================================================
+# Dependencies
+# =========================================================
 
-# Secrets
+node_modules/
+**/node_modules/
+
+
+# =========================================================
+# Environment files
+# =========================================================
+
 .env
-.env.local
-.env.production.local
-.env.development.local
+.env.*
+!.env.example
+!.env.test.example
 
-# Frontend assets compiled code
-public/assets
 
-# Build tools specific
-npm-debug.log
-yarn-error.log
+# =========================================================
+# Logs
+# =========================================================
 
-# Editors specific
-.fleet
-.idea
-.vscode
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Platform specific
+
+# =========================================================
+# Build / Generated output
+# =========================================================
+
+dist/
+**/dist/
+
+build/
+**/build/
+
+dist-ssr/
+
+coverage/
+
+
+# =========================================================
+# AdonisJS
+# =========================================================
+
+.adonisjs/
+**/.adonisjs/
+
+# AdonisJS generated build output
+tmp/
+**/tmp/
+
+
+# =========================================================
+# Frontend / Vite
+# =========================================================
+
+*.local
+
+# Vite cache
+node_modules/.vite/
+
+
+# =========================================================
+# Testing
+# =========================================================
+
+.nyc_output/
+playwright-report/
+test-results/
+
+
+# =========================================================
+# Editor
+# =========================================================
+
+.vscode/*
+!.vscode/extensions.json
+
+.idea/
+
 .DS_Store
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+# =========================================================
+# OS
+# =========================================================
+
+Thumbs.db
+Desktop.ini
+
+
+# =========================================================
+# TypeScript
+# =========================================================
+
+*.tsbuildinfo
+
+
+# =========================================================
+# Misc
+# =========================================================
+
+*.bak
+*.tmp
+
+backend/.env.test
