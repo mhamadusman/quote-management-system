@@ -16,6 +16,9 @@
 ## Common Utility Components & Architecture
 - **Memoized Inputs & Buttons**: Created reusable components (`FormInput`, `PasswordInput`, `SubmitButton`) in `/src/components/common/` wrapped in `React.memo` for optimal render performance and error label encapsulation.
 - **Auth Card & Password Checklist**: Extracted `AuthCard` layout and `PasswordRules` into `/src/components/auth/`, condensing both `LoginPage.tsx` and `SignupPage.tsx` down to lightweight ~50 line components.
+- **Constants & Types**: Centralized all route paths, validation messages, UI labels, and branding in `/src/constants/` and domain interfaces in `/src/types/` (zero hardcoded strings).
+- **Dashboard**: Simplified dashboard view to cleanly display centered greeting with the currently authenticated user (`Hello, <name>!`).
 - **Next**: Build corridor listing, quote creation engine, and metrics summary tables.
+
 
 

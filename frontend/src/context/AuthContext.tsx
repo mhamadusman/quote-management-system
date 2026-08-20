@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { AuthService } from '../api/auth';
-import type { User, LoginPayload, SignupPayload } from '../api/auth';
+import type { User, LoginPayload, SignupPayload, ApiResponse } from '../types';
 
 export interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<User>;
-  signup: (payload: SignupPayload) => Promise<User>;
+  signup: (payload: SignupPayload) => Promise<ApiResponse<User>>;
   logout: () => Promise<void>;
 }
 
@@ -17,6 +17,15 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const normalizeUserData = (data: unknown): User | null => {
+  if (!data || typeof data !== 'object') return null;
+  const obj = data as Record<string, unknown>;
+  if (obj.user && typeof obj.user === 'object') {
+    return obj.user as User;
+  }
+  return obj as unknown as User;
+};
+
 export const AuthProvider = (props: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -25,7 +34,7 @@ export const AuthProvider = (props: AuthProviderProps) => {
     const fetchUser = async () => {
       try {
         const res = await AuthService.getProfile();
-        setUser(res.data);
+        setUser(normalizeUserData(res.data));
       } catch {
         setUser(null);
       } finally {
@@ -38,18 +47,18 @@ export const AuthProvider = (props: AuthProviderProps) => {
   const login = async (payload: LoginPayload): Promise<User> => {
     try {
       const res = await AuthService.login(payload);
-      setUser(res.data);
-      return res.data;
+      const userData = normalizeUserData(res.data) as User;
+      setUser(userData);
+      return userData;
     } catch (error) {
       throw error;
     }
   };
 
-  const signup = async (payload: SignupPayload): Promise<User> => {
+  const signup = async (payload: SignupPayload): Promise<ApiResponse<User>> => {
     try {
       const res = await AuthService.signup(payload);
-      setUser(res.data);
-      return res.data;
+      return res;
     } catch (error) {
       throw error;
     }

@@ -1,17 +1,9 @@
-import { memo, ReactNode } from 'react';
+import { memo } from 'react';
 import { Box, Typography, Alert, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import type { AuthCardProps } from '../../types';
+import { BRANDING } from '../../constants';
 import '../../styles/auth/auth.css';
-
-export interface AuthCardProps {
-  title: string;
-  subtitle: string;
-  serverError?: string | null;
-  footerText: string;
-  footerLinkText: string;
-  footerLinkTo: string;
-  children: ReactNode;
-}
 
 const AuthCardComponent = (props: AuthCardProps) => {
   return (
@@ -35,7 +27,7 @@ const AuthCardComponent = (props: AuthCardProps) => {
                 alignItems: 'baseline',
               }}
             >
-              thunes
+              {BRANDING.NAME}
               <Box
                 component="span"
                 sx={{
@@ -56,6 +48,12 @@ const AuthCardComponent = (props: AuthCardProps) => {
             {props.subtitle}
           </Typography>
         </Box>
+
+        {props.successMessage && (
+          <Alert severity="success" sx={{ mb: 2, fontSize: '0.78rem', py: 0.5, borderRadius: '4px' }}>
+            {props.successMessage}
+          </Alert>
+        )}
 
         {props.serverError && (
           <Alert severity="error" sx={{ mb: 2, fontSize: '0.78rem', py: 0.5, borderRadius: '4px' }}>

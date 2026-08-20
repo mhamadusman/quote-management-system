@@ -17,18 +17,9 @@ import {
   Person as PersonIcon,
   KeyboardArrowDown as ArrowDownIcon,
 } from '@mui/icons-material';
+import type { NavbarProps } from '../../types';
+import { BRANDING } from '../../constants';
 import '../../styles/navbar/navbar.css';
-
-export interface NavbarUser {
-  name: string;
-  email: string;
-  avatarUrl?: string;
-}
-
-export interface NavbarProps {
-  user?: NavbarUser;
-  onLogout?: () => void;
-}
 
 interface HideOnScrollProps {
   children: React.ReactElement<unknown>;
@@ -47,10 +38,9 @@ export const Navbar = (props: NavbarProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const currentUser: NavbarUser = props.user || {
-    name: 'Alex Morgan',
-    email: 'alex.m@thunes.com',
-  };
+  const userName = props.user?.name || 'Guest User';
+  const userEmail = props.user?.email || '';
+  const avatarLetter = (userName.charAt(0) || 'U').toUpperCase();
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -85,7 +75,7 @@ export const Navbar = (props: NavbarProps) => {
                 alignItems: 'baseline',
               }}
             >
-              thunes
+              {BRANDING.NAME}
               <Box
                 component="span"
                 sx={{
@@ -101,13 +91,13 @@ export const Navbar = (props: NavbarProps) => {
             </Typography>
           </Box>
 
-          {/* Right Profile & Actions with exactly matched height */}
+          {/* Right Profile & Actions with matching height */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {/* Fully Rounded Compact Profile Pill */}
             <Box onClick={handleOpenMenu} className="navbar-profile-pill">
               <Avatar
-                src={currentUser.avatarUrl}
-                alt={currentUser.name}
+                src={props.user?.avatarUrl}
+                alt={userName}
                 sx={{
                   width: 28,
                   height: 28,
@@ -117,7 +107,7 @@ export const Navbar = (props: NavbarProps) => {
                   color: '#FFFFFF',
                 }}
               >
-                {currentUser.name.charAt(0)}
+                {avatarLetter}
               </Avatar>
 
               <Box className="navbar-profile-text" sx={{ display: { xs: 'none', sm: 'flex' } }}>
@@ -126,25 +116,29 @@ export const Navbar = (props: NavbarProps) => {
                   noWrap
                   sx={{ fontSize: '0.76rem', fontWeight: 600, color: '#0F172A', lineHeight: 1.2 }}
                 >
-                  {currentUser.name}
+                  {userName}
                 </Typography>
-                <Typography
-                  variant="caption"
-                  noWrap
-                  sx={{ fontSize: '0.66rem', color: '#475569', fontWeight: 500, lineHeight: 1.1 }}
-                >
-                  {currentUser.email}
-                </Typography>
+                {userEmail && (
+                  <Typography
+                    variant="caption"
+                    noWrap
+                    sx={{ fontSize: '0.66rem', color: '#475569', fontWeight: 500, lineHeight: 1.1 }}
+                  >
+                    {userEmail}
+                  </Typography>
+                )}
               </Box>
 
               <ArrowDownIcon sx={{ fontSize: '0.9rem', color: '#64748B', flexShrink: 0 }} />
             </Box>
 
             {/* Fully Rounded Matching Logout Button */}
-            <Box component="button" onClick={handleLogoutClick} className="navbar-logout-btn">
-              <LogoutIcon sx={{ fontSize: '0.9rem' }} />
-              <span>Log out</span>
-            </Box>
+            {props.onLogout && (
+              <Box component="button" onClick={handleLogoutClick} className="navbar-logout-btn">
+                <LogoutIcon sx={{ fontSize: '0.9rem' }} />
+                <span>Log out</span>
+              </Box>
+            )}
 
             {/* Profile Dropdown Menu */}
             <Menu
@@ -167,11 +161,13 @@ export const Navbar = (props: NavbarProps) => {
             >
               <Box sx={{ px: 2, py: 1.25, borderBottom: '1px solid #F1F5F9' }}>
                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.825rem', color: '#0F172A' }}>
-                  {currentUser.name}
+                  {userName}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#475569', fontSize: '0.725rem' }}>
-                  {currentUser.email}
-                </Typography>
+                {userEmail && (
+                  <Typography variant="caption" sx={{ color: '#475569', fontSize: '0.725rem' }}>
+                    {userEmail}
+                  </Typography>
+                )}
               </Box>
 
               <MenuItem onClick={handleCloseMenu} sx={{ py: 1 }}>
@@ -181,12 +177,14 @@ export const Navbar = (props: NavbarProps) => {
                 <ListItemText primary="Account" primaryTypographyProps={{ fontSize: '0.8125rem' }} />
               </MenuItem>
 
-              <MenuItem onClick={handleLogoutClick} sx={{ py: 1, color: 'error.main' }}>
-                <ListItemIcon sx={{ minWidth: 28 }}>
-                  <LogoutIcon sx={{ fontSize: '1.05rem', color: 'error.main' }} />
-                </ListItemIcon>
-                <ListItemText primary="Log out" primaryTypographyProps={{ fontSize: '0.8125rem', fontWeight: 600 }} />
-              </MenuItem>
+              {props.onLogout && (
+                <MenuItem onClick={handleLogoutClick} sx={{ py: 1, color: 'error.main' }}>
+                  <ListItemIcon sx={{ minWidth: 28 }}>
+                    <LogoutIcon sx={{ fontSize: '1.05rem', color: 'error.main' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Log out" primaryTypographyProps={{ fontSize: '0.8125rem', fontWeight: 600 }} />
+                </MenuItem>
+              )}
             </Menu>
           </Box>
         </Toolbar>

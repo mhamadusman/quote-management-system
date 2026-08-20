@@ -3,19 +3,17 @@ import {
   CheckCircle as CheckCircleIcon,
   RadioButtonUnchecked as UncheckedIcon,
 } from '@mui/icons-material';
-
-export interface PasswordRulesProps {
-  password?: string;
-}
+import type { PasswordRulesProps } from '../../types';
+import { PASSWORD_RULES_LABELS } from '../../constants';
 
 const PasswordRulesComponent = (props: PasswordRulesProps) => {
   const pwd = props.password || '';
 
   const rules = [
-    { label: '8+ characters', valid: pwd.length >= 8 },
-    { label: '1 lowercase (a-z)', valid: /[a-z]/.test(pwd) },
-    { label: '1 uppercase (A-Z)', valid: /[A-Z]/.test(pwd) },
-    { label: '1 symbol (!@#$)', valid: /[^A-Za-z0-9]/.test(pwd) },
+    { label: PASSWORD_RULES_LABELS.MIN_LENGTH, valid: pwd.length >= 8 },
+    { label: PASSWORD_RULES_LABELS.LOWERCASE, valid: /[a-z]/.test(pwd) },
+    { label: PASSWORD_RULES_LABELS.UPPERCASE, valid: /[A-Z]/.test(pwd) },
+    { label: PASSWORD_RULES_LABELS.SPECIAL_CHAR, valid: /[^A-Za-z0-9]/.test(pwd) },
   ];
 
   return (

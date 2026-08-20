@@ -1,14 +1,7 @@
 import { useState, memo } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
-import type { TextFieldProps } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import type { UseFormRegisterReturn, FieldError } from 'react-hook-form';
-
-export interface PasswordInputProps extends Omit<TextFieldProps, 'error' | 'type'> {
-  label: string;
-  error?: FieldError | string;
-  registration?: UseFormRegisterReturn;
-}
+import type { PasswordInputProps } from '../../types';
 
 const PasswordInputComponent = (props: PasswordInputProps) => {
   const [showPassword, setShowPassword] = useState(false);

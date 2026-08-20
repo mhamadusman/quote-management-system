@@ -1,13 +1,6 @@
 import { memo } from 'react';
 import { TextField } from '@mui/material';
-import type { TextFieldProps } from '@mui/material';
-import type { UseFormRegisterReturn, FieldError } from 'react-hook-form';
-
-export interface FormInputProps extends Omit<TextFieldProps, 'error'> {
-  label: string;
-  error?: FieldError | string;
-  registration?: UseFormRegisterReturn;
-}
+import type { FormInputProps } from '../../types';
 
 const FormInputComponent = (props: FormInputProps) => {
   const errorMessage = typeof props.error === 'string' ? props.error : props.error?.message;

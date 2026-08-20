@@ -1,25 +1,5 @@
 import apiClient from './client';
-import type { ApiResponse } from './client';
-
-export interface User {
-  id: number;
-  fullName: string;
-  email: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface SignupPayload {
-  fullName: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
+import type { ApiResponse, User, SignupPayload, LoginPayload } from '../types';
 
 export class AuthService {
   static async signup(payload: SignupPayload): Promise<ApiResponse<User>> {

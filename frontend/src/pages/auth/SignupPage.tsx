@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { PersonAddOutlined as SignupIcon } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
-import type { SignupPayload } from '../../api/auth';
+import type { SignupPayload } from '../../types';
 import { FormInput, PasswordInput, SubmitButton } from '../../components/common';
 import { AuthCard } from '../../components/auth/AuthCard';
 import { PasswordRules } from '../../components/auth/PasswordRules';
+import { APP_ROUTES, AUTH_MESSAGES, VALIDATION_MESSAGES } from '../../constants';
 
 export interface SignupPageProps {}
 
@@ -36,26 +37,28 @@ export const SignupPage = (props: SignupPageProps) => {
   const onSubmit = async (data: SignupPayload) => {
     setServerError(null);
     if (!isPasswordValid) {
-      setServerError('Please satisfy all password security requirements');
+      setServerError(AUTH_MESSAGES.SIGNUP.PASSWORD_UNSATISFIED);
       return;
     }
     try {
-      await auth.signup(data);
-      navigate('/');
+      const response = await auth.signup(data);
+      navigate(APP_ROUTES.LOGIN, {
+        state: { successMessage: response.message },
+      });
     } catch (err: unknown) {
       const errorObj = err as { message?: string; errors?: Array<{ message: string }> };
-      setServerError(errorObj.errors?.[0]?.message || errorObj.message || 'Failed to create account.');
+      setServerError(errorObj.errors?.[0]?.message || errorObj.message || AUTH_MESSAGES.SIGNUP.DEFAULT_ERROR);
     }
   };
 
   return (
     <AuthCard
-      title="Create an account"
-      subtitle="Get started with cross-border quote management"
+      title={AUTH_MESSAGES.SIGNUP.TITLE}
+      subtitle={AUTH_MESSAGES.SIGNUP.SUBTITLE}
       serverError={serverError}
-      footerText="Already have an account?"
-      footerLinkText="Sign in"
-      footerLinkTo="/login"
+      footerText={AUTH_MESSAGES.SIGNUP.HAS_ACCOUNT}
+      footerLinkText={AUTH_MESSAGES.SIGNUP.SIGN_IN}
+      footerLinkTo={APP_ROUTES.LOGIN}
     >
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 1.75 }}>
         <FormInput
@@ -64,8 +67,8 @@ export const SignupPage = (props: SignupPageProps) => {
           autoComplete="name"
           error={errors.fullName}
           registration={register('fullName', {
-            required: 'Full name is required',
-            minLength: { value: 2, message: 'Name must be at least 2 characters' },
+            required: VALIDATION_MESSAGES.FULL_NAME_REQUIRED,
+            minLength: { value: 2, message: VALIDATION_MESSAGES.FULL_NAME_MIN_LENGTH },
           })}
         />
 
@@ -75,8 +78,8 @@ export const SignupPage = (props: SignupPageProps) => {
           autoComplete="email"
           error={errors.email}
           registration={register('email', {
-            required: 'Email is required',
-            pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Enter a valid email address' },
+            required: VALIDATION_MESSAGES.EMAIL_REQUIRED,
+            pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: VALIDATION_MESSAGES.EMAIL_INVALID },
           })}
         />
 
@@ -87,8 +90,8 @@ export const SignupPage = (props: SignupPageProps) => {
             autoComplete="new-password"
             error={errors.password}
             registration={register('password', {
-              required: 'Password is required',
-              minLength: { value: 8, message: 'Password must be at least 8 characters' },
+              required: VALIDATION_MESSAGES.PASSWORD_REQUIRED,
+              minLength: { value: 8, message: VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH },
             })}
           />
           <PasswordRules password={passwordValue} />
@@ -100,14 +103,14 @@ export const SignupPage = (props: SignupPageProps) => {
           autoComplete="new-password"
           error={errors.password_confirmation}
           registration={register('password_confirmation', {
-            required: 'Please confirm your password',
-            validate: (val) => val === watch('password') || 'Passwords do not match',
+            required: VALIDATION_MESSAGES.PASSWORD_CONFIRMATION_REQUIRED,
+            validate: (val) => val === watch('password') || VALIDATION_MESSAGES.PASSWORDS_MISMATCH,
           })}
         />
 
         <SubmitButton
-          label="Create account"
-          loadingText="Creating account..."
+          label={AUTH_MESSAGES.SIGNUP.BUTTON}
+          loadingText={AUTH_MESSAGES.SIGNUP.BUTTON_LOADING}
           isLoading={isSubmitting}
           startIcon={<SignupIcon sx={{ fontSize: '1rem' }} />}
         />

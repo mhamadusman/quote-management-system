@@ -286,6 +286,9 @@ Services Style: Use classes with static functions for all API and business servi
 
 Error Handling: Always use structured try-catch blocks for asynchronous service calls and API interactions.
 
+Null Safety: Always implement defensive null-safety checks and safe fallbacks for optional or asynchronous data to prevent runtime crashes.
+
+
 ## Reusable Utility Components Guidelines
 
 Extract repeated form fields and UI patterns into memoized utility components (`React.memo`) inside `/src/components/common/` for maximum reusability, consistency, and render performance.

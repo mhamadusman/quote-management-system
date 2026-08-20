@@ -1,12 +1,6 @@
 import { memo } from 'react';
 import { Button, CircularProgress } from '@mui/material';
-import type { ButtonProps } from '@mui/material';
-
-export interface SubmitButtonProps extends ButtonProps {
-  isLoading?: boolean;
-  loadingText?: string;
-  label: string;
-}
+import type { SubmitButtonProps } from '../../types';
 
 const SubmitButtonComponent = (props: SubmitButtonProps) => {
   const isSubmitting = Boolean(props.isLoading);

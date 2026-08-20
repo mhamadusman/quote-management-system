@@ -1,28 +1,11 @@
 import { Box, Container, Typography, Grid } from '@mui/material';
+import type { FooterProps } from '../../types';
+import { BRANDING, FOOTER_COLUMNS } from '../../constants';
 import '../../styles/footer/footer.css';
-
-export interface FooterProps {
-  appName?: string;
-}
 
 export const Footer = (props: FooterProps) => {
   const currentYear = new Date().getFullYear();
-  const title = props.appName || 'Quote Management System';
-
-  const linkColumns = [
-    {
-      title: 'Platform',
-      links: ['Corridors', 'Quotes Engine', 'FX Rates', 'Settlements'],
-    },
-    {
-      title: 'Resources',
-      links: ['API Documentation', 'Compliance Guide', 'Integration Status', 'Developer Portal'],
-    },
-    {
-      title: 'Legal & Privacy',
-      links: ['Terms of Service', 'Privacy Policy', 'Security Overview', 'Cookie Preferences'],
-    },
-  ];
+  const title = props.appName || BRANDING.APP_TITLE;
 
   return (
     <Box component="footer" className="footer-container">
@@ -30,7 +13,7 @@ export const Footer = (props: FooterProps) => {
       <div className="footer-circle-ring" />
 
       {/* Big Faded Watermark Background */}
-      <div className="footer-watermark">thunes</div>
+      <div className="footer-watermark">{BRANDING.NAME}</div>
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Grid container spacing={4} sx={{ mb: 5 }}>
@@ -49,7 +32,7 @@ export const Footer = (props: FooterProps) => {
                   alignItems: 'baseline',
                 }}
               >
-                thunes
+                {BRANDING.NAME}
                 <Box
                   component="span"
                   sx={{
@@ -65,14 +48,14 @@ export const Footer = (props: FooterProps) => {
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 300, lineHeight: 1.6 }}>
-              {title}. Enterprise-grade cross-border payments, corridor quotation, and revenue optimization.
+              {title}. {BRANDING.APP_DESCRIPTION}
             </Typography>
           </Grid>
 
           {/* Links Columns */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Grid container spacing={3}>
-              {linkColumns.map((col) => (
+              {FOOTER_COLUMNS.map((col) => (
                 <Grid key={col.title} size={{ xs: 6, sm: 4 }}>
                   <Typography
                     variant="caption"
@@ -113,10 +96,10 @@ export const Footer = (props: FooterProps) => {
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            © {currentYear} Thunes Payments Platform. All rights reserved.
+            © {currentYear} {BRANDING.COPYRIGHT}
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Session Secured • API v1
+            {BRANDING.STATUS_SECURE}
           </Typography>
         </Box>
       </Container>

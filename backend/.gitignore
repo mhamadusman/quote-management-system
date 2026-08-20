@@ -116,3 +116,5 @@ Desktop.ini
 *.tmp
 
 backend/.env.test
+frontend/.env
+frontend/.env.example
