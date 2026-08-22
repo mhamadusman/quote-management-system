@@ -1,27 +1,27 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { LockOutlined as LockIcon } from '@mui/icons-material';
+import { useQueryClient } from '@tanstack/react-query';
+import { AuthService } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
-import type { LoginPayload } from '../../types';
+import type { LoginPayload, User } from '../../types';
 import { FormInput, PasswordInput, SubmitButton } from '../../components/common';
 import { AuthCard } from '../../components/auth/AuthCard';
 import { APP_ROUTES, AUTH_MESSAGES, VALIDATION_MESSAGES } from '../../constants';
+import { handleApiSuccess, handleApiError } from '../../utils';
 
 export interface LoginPageProps {}
 
 export const LoginPage = (props: LoginPageProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const auth = useAuth();
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  const successMessage = (location.state as { successMessage?: string })?.successMessage || null;
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginPayload>({
     defaultValues: { email: '', password: '' },
@@ -29,13 +29,16 @@ export const LoginPage = (props: LoginPageProps) => {
   });
 
   const onSubmit = async (data: LoginPayload) => {
-    setServerError(null);
     try {
-      await auth.login(data);
+      const res = await AuthService.login(data);
+      const raw = res.data as Record<string, unknown> | null;
+      const userData = raw && 'user' in raw ? (raw.user as User) : (raw as unknown as User);
+      auth.setUser(userData);
+      queryClient.setQueryData(['currentUser'], userData);
+      handleApiSuccess(res.message || 'Logged in successfully');
       navigate(APP_ROUTES.HOME);
     } catch (err: unknown) {
-      const errorObj = err as { message?: string; errors?: Array<{ message: string }> };
-      setServerError(errorObj.errors?.[0]?.message || errorObj.message || AUTH_MESSAGES.LOGIN.DEFAULT_ERROR);
+      handleApiError(err, setError, AUTH_MESSAGES.LOGIN.DEFAULT_ERROR);
     }
   };
 
@@ -43,8 +46,6 @@ export const LoginPage = (props: LoginPageProps) => {
     <AuthCard
       title={AUTH_MESSAGES.LOGIN.TITLE}
       subtitle={AUTH_MESSAGES.LOGIN.SUBTITLE}
-      serverError={serverError}
-      successMessage={successMessage}
       footerText={AUTH_MESSAGES.LOGIN.NO_ACCOUNT}
       footerLinkText={AUTH_MESSAGES.LOGIN.CREATE_ACCOUNT}
       footerLinkTo={APP_ROUTES.SIGNUP}
@@ -80,3 +81,4 @@ export const LoginPage = (props: LoginPageProps) => {
     </AuthCard>
   );
 };
+

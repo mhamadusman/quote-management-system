@@ -2,6 +2,7 @@ import { useState, memo } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import type { PasswordInputProps } from '../../types';
+export type { PasswordInputProps };
 
 const PasswordInputComponent = (props: PasswordInputProps) => {
   const [showPassword, setShowPassword] = useState(false);

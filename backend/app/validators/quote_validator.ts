@@ -14,6 +14,23 @@ export const quoteSchemaValidator = vine.compile(
     [QuoteFields.TCV]: vine.string().trim().regex(DECIMAL_REGEX).optional(),
     [QuoteFields.TOTAL_REVENUE]: vine.string().trim().regex(DECIMAL_REGEX).optional(),
     [QuoteFields.STATUS]: vine.enum(QUOTE_STATUSES).optional(),
+    [QuoteFields.CORRIDORS]: vine
+      .array(
+        vine.object({
+          [QuoteFields.CORRIDOR_ID]: vine.string().trim(),
+          [QuoteFields.OVERRIDE_STD_FIXED_FEE_USD]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+          [QuoteFields.OVERRIDE_VARIABLE_FEE_PERCENTAGE]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+        })
+      )
+      .optional(),
   })
 )
 
@@ -31,6 +48,11 @@ quoteSchemaValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.STATUS}.required`]: QuoteMessages.ERROR.STATUS_REQUIRED,
   [`${QuoteFields.STATUS}.enum`]: QuoteMessages.ERROR.STATUS_INVALID,
   [`${QuoteFields.CONTRACT_LENGTH}.positive`]: QuoteMessages.ERROR.CONTRACT_LENGTH_POSITIVE,
+  'corridors.*.corridorId.required': QuoteMessages.ERROR.CORRIDOR_ID_REQUIRED,
+  'corridors.*.overrideStdFixedFeeUsd.regex':
+    QuoteMessages.ERROR.OVERRIDE_STD_FIXED_FEE_USD_DECIMAL,
+  'corridors.*.overrideVariableFeePercentage.regex':
+    QuoteMessages.ERROR.OVERRIDE_VARIABLE_FEE_PERCENTAGE_DECIMAL,
 })
 
 export const quoteIdValidator = vine.compile(
@@ -42,36 +64,6 @@ export const quoteIdValidator = vine.compile(
 quoteIdValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
   [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
-})
-
-const COMMA_SEPARATED_NUMERIC_REGEX = /^\d+(,\d+)*$/
-
-export const attachCorridorsValidator = vine.compile(
-  vine.object({
-    [QuoteFields.ID]: vine.number(),
-    [QuoteFields.CORRIDOR_IDS]: vine.string().trim().regex(COMMA_SEPARATED_NUMERIC_REGEX),
-  })
-)
-
-attachCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
-  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
-  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
-  [`${QuoteFields.CORRIDOR_IDS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
-  [`${QuoteFields.CORRIDOR_IDS}.regex`]: QuoteMessages.ERROR.CORRIDOR_IDS_INVALID,
-})
-
-export const removeCorridorsValidator = vine.compile(
-  vine.object({
-    [QuoteFields.ID]: vine.number(),
-    [QuoteFields.CORRIDOR_IDS]: vine.string().trim().regex(COMMA_SEPARATED_NUMERIC_REGEX),
-  })
-)
-
-removeCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
-  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
-  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
-  [`${QuoteFields.CORRIDOR_IDS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
-  [`${QuoteFields.CORRIDOR_IDS}.regex`]: QuoteMessages.ERROR.CORRIDOR_IDS_INVALID,
 })
 
 export const updateQuoteValidator = vine.compile(
@@ -97,20 +89,56 @@ updateQuoteValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.STATUS}.enum`]: QuoteMessages.ERROR.STATUS_INVALID,
 })
 
-export const corridorIdValidator = vine.compile(
+export const corridorParamValidator = vine.compile(
   vine.object({
     [QuoteFields.ID]: vine.number(),
     [QuoteFields.CORRIDOR_ID]: vine.string().trim(),
   })
 )
 
-corridorIdValidator.messagesProvider = new SimpleMessagesProvider({
+corridorParamValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
   [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
   [`${QuoteFields.CORRIDOR_ID}.required`]: QuoteMessages.ERROR.CORRIDOR_ID_REQUIRED,
 })
 
-export const updateCorridorOverrideValidator = vine.compile(
+export const attachQuoteCorridorsValidator = vine.compile(
+  vine.object({
+    [QuoteFields.ID]: vine.number(),
+    [QuoteFields.VERSION]: vine.number().positive().optional(),
+    [QuoteFields.CORRIDORS]: vine
+      .array(
+        vine.object({
+          [QuoteFields.CORRIDOR_ID]: vine.string().trim(),
+          [QuoteFields.OVERRIDE_STD_FIXED_FEE_USD]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+          [QuoteFields.OVERRIDE_VARIABLE_FEE_PERCENTAGE]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+        })
+      )
+      .minLength(1),
+  })
+)
+
+attachQuoteCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
+  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
+  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
+  [`${QuoteFields.CORRIDORS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  [`${QuoteFields.CORRIDORS}.minLength`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  'corridors.*.corridorId.required': QuoteMessages.ERROR.CORRIDOR_ID_REQUIRED,
+  'corridors.*.overrideStdFixedFeeUsd.regex':
+    QuoteMessages.ERROR.OVERRIDE_STD_FIXED_FEE_USD_DECIMAL,
+  'corridors.*.overrideVariableFeePercentage.regex':
+    QuoteMessages.ERROR.OVERRIDE_VARIABLE_FEE_PERCENTAGE_DECIMAL,
+})
+
+export const updateSingleCorridorOverrideValidator = vine.compile(
   vine.object({
     [QuoteFields.ID]: vine.number(),
     [QuoteFields.CORRIDOR_ID]: vine.string().trim(),
@@ -128,7 +156,7 @@ export const updateCorridorOverrideValidator = vine.compile(
   })
 )
 
-updateCorridorOverrideValidator.messagesProvider = new SimpleMessagesProvider({
+updateSingleCorridorOverrideValidator.messagesProvider = new SimpleMessagesProvider({
   [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
   [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
   [`${QuoteFields.CORRIDOR_ID}.required`]: QuoteMessages.ERROR.CORRIDOR_ID_REQUIRED,
@@ -138,4 +166,56 @@ updateCorridorOverrideValidator.messagesProvider = new SimpleMessagesProvider({
     QuoteMessages.ERROR.OVERRIDE_STD_FIXED_FEE_USD_DECIMAL,
   [`${QuoteFields.OVERRIDE_VARIABLE_FEE_PERCENTAGE}.regex`]:
     QuoteMessages.ERROR.OVERRIDE_VARIABLE_FEE_PERCENTAGE_DECIMAL,
+})
+
+export const batchUpdateCorridorsValidator = vine.compile(
+  vine.object({
+    [QuoteFields.ID]: vine.number(),
+    [QuoteFields.VERSION]: vine.number().positive(),
+    [QuoteFields.CORRIDORS]: vine
+      .array(
+        vine.object({
+          [QuoteFields.CORRIDOR_ID]: vine.string().trim(),
+          [QuoteFields.OVERRIDE_STD_FIXED_FEE_USD]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+          [QuoteFields.OVERRIDE_VARIABLE_FEE_PERCENTAGE]: vine
+            .string()
+            .trim()
+            .regex(DECIMAL_REGEX)
+            .optional(),
+        })
+      )
+      .minLength(1),
+  })
+)
+
+batchUpdateCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
+  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
+  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
+  [`${QuoteFields.VERSION}.required`]: QuoteMessages.ERROR.VERSION_REQUIRED,
+  [`${QuoteFields.VERSION}.positive`]: QuoteMessages.ERROR.VERSION_POSITIVE,
+  [`${QuoteFields.CORRIDORS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  [`${QuoteFields.CORRIDORS}.minLength`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  'corridors.*.corridorId.required': QuoteMessages.ERROR.CORRIDOR_ID_REQUIRED,
+  'corridors.*.overrideStdFixedFeeUsd.regex':
+    QuoteMessages.ERROR.OVERRIDE_STD_FIXED_FEE_USD_DECIMAL,
+  'corridors.*.overrideVariableFeePercentage.regex':
+    QuoteMessages.ERROR.OVERRIDE_VARIABLE_FEE_PERCENTAGE_DECIMAL,
+})
+
+export const batchRemoveCorridorsValidator = vine.compile(
+  vine.object({
+    [QuoteFields.ID]: vine.number(),
+    [QuoteFields.CORRIDOR_IDS]: vine.array(vine.string().trim()).minLength(1),
+  })
+)
+
+batchRemoveCorridorsValidator.messagesProvider = new SimpleMessagesProvider({
+  [`${QuoteFields.ID}.required`]: QuoteMessages.ERROR.ID_REQUIRED,
+  [`${QuoteFields.ID}.number`]: QuoteMessages.ERROR.ID_INVALID,
+  [`${QuoteFields.CORRIDOR_IDS}.required`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
+  [`${QuoteFields.CORRIDOR_IDS}.minLength`]: QuoteMessages.ERROR.CORRIDOR_IDS_REQUIRED,
 })

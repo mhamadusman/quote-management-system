@@ -1,15 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { AuthService } from '../api/auth';
-import type { User, LoginPayload, SignupPayload, ApiResponse } from '../types';
+import type { User, AuthContextType } from '../types';
 
-export interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  login: (payload: LoginPayload) => Promise<User>;
-  signup: (payload: SignupPayload) => Promise<ApiResponse<User>>;
-  logout: () => Promise<void>;
-}
+export type { AuthContextType };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -44,34 +38,8 @@ export const AuthProvider = (props: AuthProviderProps) => {
     fetchUser();
   }, []);
 
-  const login = async (payload: LoginPayload): Promise<User> => {
-    try {
-      const res = await AuthService.login(payload);
-      const userData = normalizeUserData(res.data) as User;
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const signup = async (payload: SignupPayload): Promise<ApiResponse<User>> => {
-    try {
-      const res = await AuthService.signup(payload);
-      return res;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const logout = async (): Promise<void> => {
-    try {
-      await AuthService.logout();
-    } catch {
-      // Continue cleanup on logout error
-    } finally {
-      setUser(null);
-    }
+  const clearUser = () => {
+    setUser(null);
   };
 
   return (
@@ -79,9 +47,8 @@ export const AuthProvider = (props: AuthProviderProps) => {
       value={{
         user,
         isLoading,
-        login,
-        signup,
-        logout,
+        setUser,
+        clearUser,
       }}
     >
       {props.children}

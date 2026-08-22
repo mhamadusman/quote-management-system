@@ -10,6 +10,7 @@ export const QuoteMessages = {
     REMOVE_CORRIDORS: 'Corridors removed from quote successfully',
     CORRIDOR_OVERRIDE_UPDATED: 'Corridor rates updated successfully',
     CORRIDORS_RETRIEVED: 'Attached corridors retrieved successfully',
+    AUDIT_LOGS_RETRIEVED: 'Audit logs retrieved successfully',
   },
 
   ERROR: {

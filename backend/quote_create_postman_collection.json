@@ -1,0 +1,601 @@
+{
+  "info": {
+    "_postman_id": "8a32b6e1-9257-418f-bc5f-c08f1b623910",
+    "name": "Quote Management API - Complete Suite",
+    "description": "Comprehensive Postman collection for all Quote Management System endpoints: Auth, Catalog, Audit Logs, Quotes Lifecycle, and Corridors Sub-Resources.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication & Account",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Sarah Connor\",\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"password_confirmation\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "signup"]
+            },
+            "description": "Registers a new user account."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticates and sets session cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/account/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "account", "profile"]
+            },
+            "description": "Gets profile of the currently authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/account/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "account", "logout"]
+            },
+            "description": "Logs out and clears session."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Corridors Catalog",
+      "item": [
+        {
+          "name": "List Master Corridors Catalog",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/corridors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "corridors"]
+            },
+            "description": "Retrieves the master reference catalog of priced remittance corridors (IDs 10000..12999)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Audit Logs",
+      "item": [
+        {
+          "name": "Get User Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/audit-logs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "audit-logs"]
+            },
+            "description": "Retrieves full historical audit trail for the authenticated user, tracking all actions (CREATE_QUOTE, UPDATE_QUOTE, DELETE_QUOTE, ATTACH_CORRIDORS, UPDATE_CORRIDOR_OVERRIDE, DETACH_CORRIDOR) with recorded changes, IP address, and timestamp."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Quotes Management",
+      "item": [
+        {
+          "name": "1. Create Quote (Only Quote Fields - No Corridors)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Basic Remittance Proposal\",\n  \"partnerName\": \"FinTech Innovations Ltd\",\n  \"contractLength\": 12,\n  \"status\": \"draft\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes"]
+            },
+            "description": "Scenario 1: Creates a bare quote without attached corridors. Financials default to 0.00 and audit log is recorded."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Create Quote (With Corridors - Default Rates Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Proposal with Default Corridor Rates\",\n  \"partnerName\": \"Acme Payments Group\",\n  \"contractLength\": 24,\n  \"status\": \"draft\",\n  \"corridors\": [\n    {\n      \"corridorId\": \"10001\"\n    },\n    {\n      \"corridorId\": \"10002\"\n    },\n    {\n      \"corridorId\": \"10003\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes"]
+            },
+            "description": "Scenario 2: Creates a quote attached with corridors where all fee values automatically fall back to standard corridor catalog rates."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create Quote (With Corridors - Custom Fee Overrides)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"High Volume Custom Rate Proposal\",\n  \"partnerName\": \"Global Enterprise FX\",\n  \"contractLength\": 36,\n  \"status\": \"in_review\",\n  \"corridors\": [\n    {\n      \"corridorId\": \"10001\",\n      \"overrideStdFixedFeeUsd\": \"1.8500\",\n      \"overrideVariableFeePercentage\": \"0.4500\"\n    },\n    {\n      \"corridorId\": \"10005\",\n      \"overrideStdFixedFeeUsd\": \"2.1000\",\n      \"overrideVariableFeePercentage\": \"0.6000\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes"]
+            },
+            "description": "Scenario 3: Creates a quote attached with corridors using full custom fee overrides (fixed and variable fee %)."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Create Quote (Mixed Overrides - Partial & Defaults)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mixed Corridor Deal 2026\",\n  \"partnerName\": \"Nexus Cross-Border Payments\",\n  \"contractLength\": 12,\n  \"status\": \"draft\",\n  \"corridors\": [\n    {\n      \"corridorId\": \"10001\",\n      \"overrideStdFixedFeeUsd\": \"1.5000\"\n    },\n    {\n      \"corridorId\": \"10002\",\n      \"overrideVariableFeePercentage\": \"0.3500\"\n    },\n    {\n      \"corridorId\": \"10010\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes"]
+            },
+            "description": "Scenario 4: Creates a quote where one corridor has a fixed fee override, another has variable % override, and another uses default corridor rates."
+          },
+          "response": []
+        },
+        {
+          "name": "List All Quotes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes"]
+            },
+            "description": "Retrieves all quotes owned by the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quote by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}"]
+            },
+            "description": "Retrieves a single quote by its ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quote (Scalar Fields Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": 1,\n  \"name\": \"Updated Remittance Proposal\",\n  \"partnerName\": \"Acme Global Enterprise\",\n  \"contractLength\": 24,\n  \"status\": \"in_review\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}"]
+            },
+            "description": "Updates only quote scalar fields (name, partnerName, contractLength, status) with optimistic lock version. Executed in exactly 2 DB queries and logs audit trail."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quote",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}"]
+            },
+            "description": "Deletes a quote and cascades removal of pivot corridors, recording an audit log entry."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Quote Corridors Sub-Resources",
+      "item": [
+        {
+          "name": "List Attached Corridors (with Latest Pivot Overrides)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors"]
+            },
+            "description": "Retrieves attached corridors with their latest pivot rate overrides and quote financial totals."
+          },
+          "response": []
+        },
+        {
+          "name": "Attach Corridors (Array of Objects)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": 1,\n  \"corridors\": [\n    {\n      \"corridorId\": \"10020\",\n      \"overrideStdFixedFeeUsd\": \"3.2500\",\n      \"overrideVariableFeePercentage\": \"0.8500\"\n    },\n    {\n      \"corridorId\": \"10021\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors"]
+            },
+            "description": "Attaches new corridors with optional custom overrides, recalculates quote totals, bumps version, and creates audit log."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Single Corridor Override",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": 2,\n  \"overrideStdFixedFeeUsd\": \"4.5000\",\n  \"overrideVariableFeePercentage\": \"1.1000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors/{{corridorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors", "{{corridorId}}"]
+            },
+            "description": "Updates fee overrides for a single attached corridor, recalculates quote totals, bumps version, and records audit log."
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Update Corridor Overrides",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": 3,\n  \"corridors\": [\n    {\n      \"corridorId\": \"10001\",\n      \"overrideStdFixedFeeUsd\": \"2.7500\",\n      \"overrideVariableFeePercentage\": \"0.6000\"\n    },\n    {\n      \"corridorId\": \"10002\",\n      \"overrideStdFixedFeeUsd\": \"1.5000\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors"]
+            },
+            "description": "Batch updates fee overrides for multiple attached corridors in a single transaction, recalculates financials, bumps version, and records audit log."
+          },
+          "response": []
+        },
+        {
+          "name": "Detach Single Corridor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors/{{corridorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors", "{{corridorId}}"]
+            },
+            "description": "Detaches a single corridor from the quote, recalculates financials, bumps version, and records audit log."
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Detach Corridors",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"corridorIds\": [\"10020\", \"10021\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/quotes/{{quoteId}}/corridors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "quotes", "{{quoteId}}", "corridors"]
+            },
+            "description": "Batch detaches multiple corridors from the quote in a single request, recalculates financials, bumps version, and records audit log."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3333",
+      "type": "string"
+    },
+    {
+      "key": "quoteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "corridorId",
+      "value": "10001",
+      "type": "string"
+    }
+  ]
+}

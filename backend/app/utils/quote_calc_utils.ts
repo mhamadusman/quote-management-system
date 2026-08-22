@@ -81,4 +81,38 @@ export default class QuoteCalcUtils {
       tcv,
     }
   }
+
+  // Calculate aggregate quote totals in-memory from loaded corridors and user overrides map
+  static calculateTotalsFromCorridors(
+    corridors: Corridor[],
+    overridesMap: Map<
+      string,
+      { overrideStdFixedFeeUsd?: string; overrideVariableFeePercentage?: string }
+    >,
+    contractLength: number,
+    yearlyVolume = this.DEFAULT_YEARLY_VOLUME_USD
+  ): QuoteTotals {
+    let totalRevenue = 0
+
+    // Sum revenue across all attached corridors with their respective overrides or default rates
+    for (const corridor of corridors) {
+      const override = overridesMap.get(corridor.id)
+      const { revenue } = this.calculateCorridorMetrics(
+        corridor,
+        override?.overrideStdFixedFeeUsd,
+        override?.overrideVariableFeePercentage,
+        yearlyVolume
+      )
+      totalRevenue += revenue
+    }
+
+    const monthlyRevenue = totalRevenue / 12
+    const tcv = totalRevenue * (contractLength || 0)
+
+    return {
+      totalRevenue,
+      monthlyRevenue,
+      tcv,
+    }
+  }
 }

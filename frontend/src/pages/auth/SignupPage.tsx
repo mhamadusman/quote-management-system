@@ -1,26 +1,25 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { PersonAddOutlined as SignupIcon } from '@mui/icons-material';
-import { useAuth } from '../../context/AuthContext';
+import { AuthService } from '../../api/auth';
 import type { SignupPayload } from '../../types';
 import { FormInput, PasswordInput, SubmitButton } from '../../components/common';
 import { AuthCard } from '../../components/auth/AuthCard';
 import { PasswordRules } from '../../components/auth/PasswordRules';
 import { APP_ROUTES, AUTH_MESSAGES, VALIDATION_MESSAGES } from '../../constants';
+import { handleApiSuccess, handleApiError } from '../../utils';
 
 export interface SignupPageProps {}
 
 export const SignupPage = (props: SignupPageProps) => {
   const navigate = useNavigate();
-  const auth = useAuth();
-  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<SignupPayload>({
     defaultValues: { fullName: '', email: '', password: '', password_confirmation: '' },
@@ -35,19 +34,16 @@ export const SignupPage = (props: SignupPageProps) => {
     /[^A-Za-z0-9]/.test(passwordValue);
 
   const onSubmit = async (data: SignupPayload) => {
-    setServerError(null);
     if (!isPasswordValid) {
-      setServerError(AUTH_MESSAGES.SIGNUP.PASSWORD_UNSATISFIED);
+      handleApiError(new Error(AUTH_MESSAGES.SIGNUP.PASSWORD_UNSATISFIED));
       return;
     }
     try {
-      const response = await auth.signup(data);
-      navigate(APP_ROUTES.LOGIN, {
-        state: { successMessage: response.message },
-      });
+      const response = await AuthService.signup(data);
+      handleApiSuccess(response.message || 'Account created successfully!');
+      navigate(APP_ROUTES.LOGIN);
     } catch (err: unknown) {
-      const errorObj = err as { message?: string; errors?: Array<{ message: string }> };
-      setServerError(errorObj.errors?.[0]?.message || errorObj.message || AUTH_MESSAGES.SIGNUP.DEFAULT_ERROR);
+      handleApiError(err, setError, AUTH_MESSAGES.SIGNUP.DEFAULT_ERROR);
     }
   };
 
@@ -55,7 +51,6 @@ export const SignupPage = (props: SignupPageProps) => {
     <AuthCard
       title={AUTH_MESSAGES.SIGNUP.TITLE}
       subtitle={AUTH_MESSAGES.SIGNUP.SUBTITLE}
-      serverError={serverError}
       footerText={AUTH_MESSAGES.SIGNUP.HAS_ACCOUNT}
       footerLinkText={AUTH_MESSAGES.SIGNUP.SIGN_IN}
       footerLinkTo={APP_ROUTES.LOGIN}

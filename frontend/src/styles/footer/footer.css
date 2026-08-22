@@ -1,11 +1,16 @@
-/* Main container for footer with clipped overflow for decorative graphics */
+/* Main container for footer with balanced desktop & mobile viewports */
 .footer-container {
   position: relative;
   overflow: hidden;
   background-color: #FFFFFF;
   border-top: 1px solid #E2E8F0;
+  min-height: 100vh; /* Slightly lessened height on desktop */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding-top: 48px;
-  padding-bottom: 32px;
+  padding-bottom: 36px;
+  box-sizing: border-box;
 }
 
 /* Large half-circle ambient shape positioned top-right with enhanced visibility */
@@ -25,35 +30,43 @@
   z-index: 0;
 }
 
-/* Large faded brand watermark aligned horizontally centered at bottom */
+/* Faded brand watermark centered vertically & horizontally covering max space */
 .footer-watermark {
   position: absolute;
-  bottom: -35px;
+  top: 50%;
   left: 50%;
-  /* Centers watermark horizontally across all viewport widths */
-  transform: translateX(-50%);
-  font-size: 13rem;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  font-size: clamp(4.5rem, 18vw, 16rem);
   font-weight: 800;
   font-family: 'Poppins', sans-serif;
   color: rgba(15, 23, 42, 0.035);
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   user-select: none;
   pointer-events: none;
   white-space: nowrap;
+  line-height: 1;
   z-index: 0;
 }
 
-@media (max-width: 900px) {
-  .footer-watermark {
-    font-size: 8rem;
-    bottom: -20px;
+@media (max-width: 768px) {
+  .footer-container {
+    min-height: 40vh; /* Half of desktop height on mobile */
+    padding-top: 32px;
+    padding-bottom: 24px;
   }
+
+  .footer-watermark {
+    font-size: clamp(3.2rem, 19vw, 6.5rem);
+  }
+
   .footer-circle-ring {
-    width: 280px;
-    height: 280px;
-    top: -90px;
-    right: -90px;
-    border-width: 20px;
+    width: 240px;
+    height: 240px;
+    top: -80px;
+    right: -80px;
+    border-width: 16px;
   }
 }
 

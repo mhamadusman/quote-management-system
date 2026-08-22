@@ -15,8 +15,8 @@ export const Footer = (props: FooterProps) => {
       {/* Big Faded Watermark Background */}
       <div className="footer-watermark">{BRANDING.NAME}</div>
 
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={4} sx={{ mb: 5 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, my: 'auto' }}>
+        <Grid container spacing={4} sx={{ mb: 6 }}>
           {/* Brand Column */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>

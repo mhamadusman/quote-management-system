@@ -1,0 +1,67 @@
+/* Grid layout for responsive quote cards */
+.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Individual quote card with subtle border and crisp elevation */
+.quote-card {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Card hover without translation/lift */
+.quote-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+/* Financial metrics 2-column key-value container */
+.quote-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  border: 1px solid #F1F5F9;
+}
+
+/* Clean empty state container with centered content and soft circular backdrop */
+.quotes-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 24px;
+  background-color: #FFFFFF;
+  border: 1px dashed #CBD5E1;
+  border-radius: 12px;
+  width: 100%;
+}
+
+/* Subtle background accent circle for empty state */
+.empty-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #EFF6FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563EB;
+  margin-bottom: 16px;
+}

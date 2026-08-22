@@ -13,12 +13,12 @@
 ## Authentication & Routing
 - **Routing**: Set up `react-router-dom` with routes for `/login`, `/signup`, and `/` (Dashboard).
 - **Service Architecture**: Refactored `AuthService` into class with static methods and explicit try-catch error handling.
-## Common Utility Components & Architecture
-- **Memoized Inputs & Buttons**: Created reusable components (`FormInput`, `PasswordInput`, `SubmitButton`) in `/src/components/common/` wrapped in `React.memo` for optimal render performance and error label encapsulation.
-- **Auth Card & Password Checklist**: Extracted `AuthCard` layout and `PasswordRules` into `/src/components/auth/`, condensing both `LoginPage.tsx` and `SignupPage.tsx` down to lightweight ~50 line components.
-- **Constants & Types**: Centralized all route paths, validation messages, UI labels, and branding in `/src/constants/` and domain interfaces in `/src/types/` (zero hardcoded strings).
-- **Dashboard**: Simplified dashboard view to cleanly display centered greeting with the currently authenticated user (`Hello, <name>!`).
-- **Next**: Build corridor listing, quote creation engine, and metrics summary tables.
+## Quotations & Dashboard
+- **Quote Components**: Created memoized `QuoteCard`, `QuoteStatusChip` (`draft`, `in_review`, `approved`, `rejected`), and `EmptyQuotes` zero-state components in `/src/components/quotes/`.
+- **Dashboard Modularization**: Extracted `DashboardHeader`, `DashboardToolbar`, and `GuestLanding` subcomponents into `/src/components/dashboard/`, and extracted `filterQuotes` logic into `/src/utils/quoteFilter.ts`.
+- **Layout**: Fixed `100vh` min/max constraints on Dashboard root with inner scrolling.
+- **Next**: Build quote creation modal and corridor attachment selector.
+
 
 
 

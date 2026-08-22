@@ -21,7 +21,6 @@ export interface LoginPayload {
 export interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (payload: LoginPayload) => Promise<User>;
-  signup: (payload: SignupPayload) => Promise<User>;
-  logout: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  clearUser: () => void;
 }
